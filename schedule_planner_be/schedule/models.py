@@ -2,7 +2,7 @@ from django.db import models
 
 
 class SubwayStation(models.Model):
-    station = models.CharField(max_length=50)
+    station = models.CharField(max_length=50, default=None)
 
 
 class Location(models.Model):
