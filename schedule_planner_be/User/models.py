@@ -1,6 +1,15 @@
 from django.db import models
 from django.core.validators import RegexValidator
-from Role.models import Role
+
+
+class Role(models.Model):
+    ROLE_CHOICES =[
+        ('SuperAdmin', 'SuperAdmin'),
+        ('Administrator', 'Administrator'),
+        ('Manager', 'Manager'),
+        ('Teacher', 'Teacher')
+    ]
+    role = models.CharField(max_length=15, choices=ROLE_CHOICES)
 
 
 class User(models.Model):
@@ -22,3 +31,6 @@ class User(models.Model):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+
+
+
