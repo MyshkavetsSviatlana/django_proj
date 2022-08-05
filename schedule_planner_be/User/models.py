@@ -19,7 +19,7 @@ class User(models.Model):
             code='invalid_email'
         ),
     ])
-    role = models.CharField(max_length=15, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=15, choices=ROLE_CHOICES, null=True)
 
     def __str__(self):
         return f'{self.fist_name} {self.last_name} : {self.role}'
