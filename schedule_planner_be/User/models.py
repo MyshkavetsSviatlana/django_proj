@@ -1,10 +1,15 @@
 from django.db import models
 from django.core.validators import RegexValidator
-from Role.models import Role
 
 
 class User(models.Model):
     """Создание модели пользователя"""
+    ROLE_CHOICES = [
+        ('SuperAdmin', 'SuperAdmin'),
+        ('Administrator', 'Administrator'),
+        ('Manager', 'Manager'),
+        ('Teacher', 'Teacher')
+    ]
     fist_name = models.CharField('Имя', max_length=50)
     last_name = models.CharField('Фамилия', max_length=100)
     email = models.EmailField(max_length=150, unique=True, validators=[
@@ -14,7 +19,7 @@ class User(models.Model):
             code='invalid_email'
         ),
     ])
-    role = models.ForeignKey(Role, verbose_name="Роль", on_delete=models.SET_NULL, null=True) #protect
+    role = models.CharField(max_length=15, choices=ROLE_CHOICES)
 
     def __str__(self):
         return f'{self.fist_name} {self.last_name} : {self.role}'
@@ -22,3 +27,6 @@ class User(models.Model):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+
+
+
