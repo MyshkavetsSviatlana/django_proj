@@ -13,32 +13,34 @@ def validate_number_of_lessons(value):
 class Course(models.Model):
     """Создание модели Course"""
     course_name = models.CharField(max_length=50)
-    teacher = models.ForeignKey("teachers.full_name", on_delete=models.CASCADE)
+    teacher = models.CharField(max_length=50)
     start_day = models.DateField(default=date.today)
     DAY_OF_WEEK = [
-        (1, "Monday"),
-        (2, "Tuesday"),
-        (3, "Wednesday"),
-        (4, "Thursday"),
-        (5, "Friday"),
-        (6, "Saturday"),
-        (7, "Sunday"),
+        ("Monday", "Monday"),
+        ("Tuesday", "Tuesday"),
+        ("Wednesday", "Wednesday"),
+        ("Thursday", "Thursday"),
+        ("Friday", "Friday"),
+        ("Saturday", "Saturday"),
+        ("Sunday", "Sunday"),
     ]
     day_of_week = models.CharField(
         choices=DAY_OF_WEEK,
         default=None,
+        max_length=50
     )
     time = models.TimeField(default=timezone.now)
-    location = models.ForeignKey("locations.address", on_delete=models.CASCADE)
-    classroom = models.ForeignKey("locations.classroom", on_delete=models.CASCADE)
+    location = models.CharField(max_length=50)
+    classroom = models.CharField(max_length=50)
     number_of_lessons = models.IntegerField(validators=[validate_number_of_lessons])
     COURSE_TYPE = [
-        (1, "Evening schedule"),
-        (2, "Morning schedule"),
+        ("Evening schedule", "Evening schedule"),
+        ("Morning schedule", "Morning schedule"),
     ]
     course_type = models.CharField(
         choices=COURSE_TYPE,
         default=None,
+        max_length=50
     )
     second_teacher = models.BooleanField()
 
