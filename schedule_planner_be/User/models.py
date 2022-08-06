@@ -22,8 +22,6 @@ class User(models.Model):
         ),
     ])
 
-    role = models.CharField('Роль',max_length=15, choices=ROLE_CHOICES, null=True)
-
     def __str__(self):
         return f'{self.fist_name} {self.last_name} : {self.role}'
 
