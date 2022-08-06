@@ -55,8 +55,8 @@ class Comment(models.Model):
     active = models.BooleanField(default=True)
 
     class Meta:
-        verbose_name = "К"
-        verbose_name_plural = "Курсы"
+        verbose_name = "Комментарий"
+        verbose_name_plural = "Комментарии"
         ordering = ('created',)
 
     def __str__(self):
