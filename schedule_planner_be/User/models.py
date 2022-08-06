@@ -28,12 +28,3 @@ class User(models.Model):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
-
-class Role(models.Model):
-    ROLE_CHOICES =[
-        ('SuperAdmin', 'SuperAdmin'),
-        ('Administrator', 'Administrator'),
-        ('Manager', 'Manager'),
-        ('Teacher', 'Teacher')
-    ]
-    role = models.CharField(max_length=15, choices=ROLE_CHOICES)
