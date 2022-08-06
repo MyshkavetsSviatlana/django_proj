@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Schedule</title>
+</head>
+<body>
+    <h1> Details of course </h1>
+    <div>
+        <h2>{{ course.course_name }}</h2>
+        <p>{{ course.teacher }}</p>
+        <p>{{ course.start_day }}</p>
+        <p>{{ course.day_of_week }}</p>
+        <p>{{ course.time}}</p>
+        <p>{{ course.location}}</p>
+        <p>{{ course.classroom}}</p>
+        <p>{{ course.number_of_lessons}}</p>
+        <p>{{ course.course_type}}</p>
+        <p>{{ course.second_teacher}}</p>
+    </div>
+    <p><a href="{% url 'course_edit' course.url %}">+ Edit Course</a></p>
+    <p><a href="{% url 'course_confirm_delete' course.url %}">+ Delete Course</a></p>
+</body>
+</html>
+
