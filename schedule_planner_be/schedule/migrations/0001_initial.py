@@ -27,17 +27,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='SubwayStation',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('station', models.CharField(default=None, max_length=50)),
-            ],
-            options={
-                'verbose_name': 'Станция метро',
-                'verbose_name_plural': 'Станции метро',
-            },
-        ),
-        migrations.CreateModel(
             name='Schedule',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -46,6 +35,7 @@ class Migration(migrations.Migration):
                 ('courses', models.ManyToManyField(to='course.course', verbose_name='Курсы')),
                 ('locations', models.ManyToManyField(to='schedule.location', verbose_name='Локации')),
                 ('reviews', models.ManyToManyField(to='course.comment', verbose_name='Комментарии')),
+
             ],
             options={
                 'verbose_name': 'Расписание',
