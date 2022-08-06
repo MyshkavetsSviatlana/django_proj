@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.datetime_safe import date
 
@@ -6,7 +7,7 @@ from django.utils.datetime_safe import date
 class Course(models.Model):
     """Создание модели Course"""
     course_name = models.CharField("Название курса", max_length=50)
-    teacher = models.CharField("Учитель", max_length=50)
+    teacher = models.OneToOneField('Teacher.Teacher', on_delete=models.DO_NOTHING, primary_key=True)
     start_day = models.DateField(default=date.today)
     DAY_OF_WEEK = [
         ("Monday", "Monday"),
@@ -23,7 +24,7 @@ class Course(models.Model):
                                    max_length=50
                                    )
     time = models.TimeField("Время", default=timezone.now)
-    location = models.CharField("Локация", max_length=50)
+    location = models.ForeignKey('schedule.Location', on_delete=models.DO_NOTHING)
     classroom = models.CharField("Аудитория", max_length=50)
     number_of_lessons = models.PositiveSmallIntegerField("Кол-во уроков", default=0)
     COURSE_TYPE = [
@@ -36,6 +37,8 @@ class Course(models.Model):
                                    max_length=50
                                    )
     second_teacher = models.BooleanField("Второй преподаватель")
+    url = models.SlugField(max_length=160, unique=True, default=None)
+
 
     def __str__(self):
         return f"{self.course_name}, {self.start_day}"
@@ -46,15 +49,16 @@ class Course(models.Model):
 
 
 class Comment(models.Model):
-    course = models.CharField("Курсы", max_length=50)
-    user = models.CharField("Пользователь", max_length=50)
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey('User.User', on_delete=models.DO_NOTHING)
     body = models.CharField(max_length=50)
     created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
     class Meta:
-        ordering = ('created',)
+        verbose_name = "Комментарий"
+        verbose_name_plural = "Комментарии"
+
 
     def __str__(self):
         return 'Comment by {} on {}'.format(self.user, self.course)
-
