@@ -43,6 +43,9 @@ class Course(models.Model):
     def __str__(self):
         return f"{self.course_name}, {self.start_day}"
 
+    def get_absolute_url(self):
+        return reverse('course_detail',kwargs={'slug': self.url})
+
     class Meta:
         verbose_name = "Курс"
         verbose_name_plural = "Курсы"
