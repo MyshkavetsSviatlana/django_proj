@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Schedule</title>
+</head>
+<body>
+    <h1> Details of Teacher </h1>
+    <div>
+        <h2>{{ Teacher.name }}</h2>
+        <p>{{ Teacher.age }}</p>
+        <p>{{ Teacher.start_date }}</p>
+        <p>{{ Teacher.group_count }}</p>
+        <p>{{ Teacher.prog_language}}</p>
+        <p>{{ Teacher.description}}</p>
+        <p>{{ Teacher.image}}</p>
+    </div>
+    <p><a href="{% url 'teacher_edit' teacher.url %}">+ Edit Teacher</a></p>
+    <p><a href="{% url 'teacher_confirm_delete' teacher.url %}">+ Delete Teacher</a></p>
+</body>
+</html>
+

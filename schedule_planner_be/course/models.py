@@ -39,12 +39,11 @@ class Course(models.Model):
     second_teacher = models.BooleanField("Второй преподаватель")
     url = models.SlugField(max_length=160, unique=True, default=None)
 
-
     def __str__(self):
         return f"{self.course_name}, {self.start_day}"
 
     def get_absolute_url(self):
-        return reverse('course_detail',kwargs={'slug': self.url})
+        return reverse('course_detail', kwargs={'slug': self.url})
 
     class Meta:
         verbose_name = "Курс"
@@ -61,7 +60,6 @@ class Comment(models.Model):
     class Meta:
         verbose_name = "Комментарий"
         verbose_name_plural = "Комментарии"
-
 
     def __str__(self):
         return 'Comment by {} on {}'.format(self.user, self.course)
