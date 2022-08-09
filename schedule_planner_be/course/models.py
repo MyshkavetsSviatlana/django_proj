@@ -39,12 +39,11 @@ class Course(models.Model):
     second_teacher = models.BooleanField("Второй преподаватель")
     url = models.SlugField(max_length=160, unique=True, default=None)
 
-
     def __str__(self):
         return f"{self.course_name}, {self.start_day}"
 
     def get_absolute_url(self):
-        return reverse('course_detail',kwargs={'slug': self.url})
+        return reverse('course_detail', kwargs={'slug': self.url})
 
     class Meta:
         verbose_name = "Курс"
@@ -54,14 +53,13 @@ class Course(models.Model):
 class Comment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING)
     user = models.ForeignKey('User.User', on_delete=models.DO_NOTHING)
-    body = models.CharField(max_length=50)
+    body = models.TextField('Комментарий')
     created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "Комментарий"
         verbose_name_plural = "Комментарии"
-
 
     def __str__(self):
         return 'Comment by {} on {}'.format(self.user, self.course)
