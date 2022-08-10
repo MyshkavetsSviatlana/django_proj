@@ -8,7 +8,7 @@ from .managers import CustomUserManager
 class User(AbstractBaseUser, PermissionsMixin):
     """Создание модели пользователя"""
     email = models.EmailField(_('email address'), max_length=150, unique=True,
-                              help_text='Введите email в формате example@gmail.ru', validators=[
+                              help_text=_('Enter email in format example@gmail.ru'), validators=[
         RegexValidator(
             regex="^([A-Za-z0-9]{1}[-!#$%&'*+./=?^_`{}|~A-Za-z0-9]{,63})@([a-z]{1,}\.){1,2}[a-z]{2,6}$",
             message=_('Write correct email address'),
@@ -25,7 +25,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_('First name'), max_length=50, blank=True)
     last_name = models.CharField(_('Last name'), max_length=100, blank=True)
     date_joined = models.DateTimeField(_('Date joined'), auto_now=True)
-    image = models.ImageField(_('Photo'), upload_to='Users/')
+    image = models.ImageField(_('Photo'), upload_to='Users/', blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
