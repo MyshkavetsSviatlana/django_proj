@@ -40,7 +40,9 @@ class Course(models.Model):
                                    max_length=50
                                    )
     second_teacher = models.BooleanField("Второй преподаватель")
+
     url = models.URLField(max_length=160, unique=True, default=None)
+
 
     def __str__(self):
         return f"{self.course_name}, {self.start_day}"
@@ -56,8 +58,10 @@ class Course(models.Model):
 class Comment(models.Model):
     """Создание модели Комментарий"""
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING)
+
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     body = models.CharField(max_length=50)
+
     created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
