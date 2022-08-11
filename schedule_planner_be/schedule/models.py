@@ -3,7 +3,7 @@ from django.db import models
 
 class SubwayStation(models.Model):
     """Создание модели станций метро"""
-    station = models.CharField(max_length=50, default=None)
+    station = models.CharField('Станция метро', max_length=50, default=None)
 
     class Meta:
         verbose_name = 'Станция метро'
@@ -12,10 +12,10 @@ class SubwayStation(models.Model):
 
 class Location(models.Model):
     """Создание модели Локация"""
-    city = models.CharField(max_length=50)
-    street = models.CharField(max_length=50)
-    building = models.IntegerField(default=None)
-    subway = models.ForeignKey(SubwayStation, on_delete=models.DO_NOTHING)
+    city = models.CharField('Город', max_length=50)
+    street = models.CharField('Улица', max_length=50)
+    building = models.IntegerField('Номер дома', default=None)
+    subway = models.ForeignKey(SubwayStation, on_delete=models.DO_NOTHING, verbose_name='Станции метро')
 
     def __str__(self):
         return f"{self.city}, {self.street}, {self.building}, {self.subway}"
@@ -28,7 +28,7 @@ class Location(models.Model):
 class Schedule(models.Model):
     """Создание модели расписания"""
 
-    title = models.TextField(default=None)
+    title = models.TextField('Название', default=None)
     courses = models.ManyToManyField('course.Course', verbose_name='Курсы')
     locations = models.ManyToManyField(Location, verbose_name='Локации')
     reviews = models.ManyToManyField('course.Comment', verbose_name='Комментарии')

@@ -2,18 +2,20 @@ from django.db import models
 from django.urls import reverse
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.utils.translation import gettext_lazy as _
+p
 
 
 class Teacher(models.Model):
     """Преподаватели"""
-    name = models.CharField("Имя", max_length=100)
-    surname = models.CharField("Фамилия", max_length=100)
-    age = models.PositiveSmallIntegerField("Возраст", default=0)
-    start_date = models.DateField()
-    group_count = models.PositiveSmallIntegerField("Количество групп", default=0)
-    prog_language = models.CharField("Язык программирования", max_length=100)
-    description = models.TextField("Описание")
-    image = models.ImageField("Фото", upload_to="Teachers/")
+    name = models.CharField(_("Name"), max_length=100)
+    surname = models.CharField(_("Surname"), max_length=100)
+    age = models.PositiveSmallIntegerField(_("Age"), default=0)
+    start_date = models.DateField(_('Start date of teaching'))
+    group_count = models.PositiveSmallIntegerField(_("Number of groups"), default=0)
+    course_name = models.CharField(_("Course name"), max_length=150)
+    description = models.TextField(_("Description"))
+    image = models.ImageField(_("Photo"), upload_to="Teachers/")
     url = models.SlugField(max_length=160, unique=True, default=None)
 
     def __str__(self):
@@ -55,3 +57,4 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Teacher)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+

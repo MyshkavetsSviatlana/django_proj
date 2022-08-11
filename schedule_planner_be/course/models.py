@@ -53,7 +53,7 @@ class Course(models.Model):
 class Comment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING)
     user = models.ForeignKey('User.User', on_delete=models.DO_NOTHING)
-    body = models.CharField(max_length=50)
+    body = models.TextField('Комментарий')
     created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
