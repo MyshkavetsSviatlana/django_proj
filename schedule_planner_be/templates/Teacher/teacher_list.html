@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Schedule</title>
+</head>
+<body>
+    <h1> List of Teachers </h1>
+    <a href="{% url 'teacher_form' %}"> Create new Teacher </a>
+    <div>
+        {% for Teacher in object_list %}
+        <h2>{{ Teacher.name }}</h2>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'User',
     'Teacher',
     'course',
+    'rest_framework',
+    'api',
+    'rest_framework_swagger'
 
 ]
 
@@ -128,3 +131,13 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'ag.charniauskaya@gmail.com'
 EMAIL_HOST_PASSWORD = 'zuzqanzlaenlszbl'
 EMAIL_PORT = 587
+
+LOGIN_REDIRECT_URL = '/'
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
