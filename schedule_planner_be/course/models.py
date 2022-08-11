@@ -7,6 +7,17 @@ from Teacher.models import Teacher
 from User.models import User
 
 
+class DayOfWeek(models.Model):
+    DAY_OF_WEEK = ("Monday"
+                   "Tuesday",
+                   "Wednesday",
+                   "Thursday",
+                   "Friday",
+                   "Saturday",
+                   "Sunday")
+    title = models.CharField(max_length=10, choices=DAY_OF_WEEK)
+
+
 class Course(models.Model):
     """Создание модели Course"""
     course_name = models.CharField("Название курса", max_length=50)

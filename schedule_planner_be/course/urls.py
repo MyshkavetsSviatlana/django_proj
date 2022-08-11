@@ -8,8 +8,8 @@ urlpatterns = [
     path('<slug:slug>/edit', CourseUpdateView.as_view(), name='course_edit'),
     path('new/', CourseCreateView.as_view(), name='course_form'),
     path('<slug:slug>/', CourseDetailView.as_view(), name='course_detail'),
-    path('', CommentListView.as_view(), name='comment_list'),
-    path('new/', CommentCreateView.as_view(), name='comment_form'),
-    path('<slug:slug>/delete', CommentDeleteView.as_view(), name='comment_confirm_delete'),
+    path('comment/', CommentListView.as_view(), name='comment_list'),
+    path('comment/new/', CommentCreateView.as_view(), name='comment_form'),
+    path('comment/<slug:slug>/delete', CommentDeleteView.as_view(), name='comment_confirm_delete'),
 ]
 
