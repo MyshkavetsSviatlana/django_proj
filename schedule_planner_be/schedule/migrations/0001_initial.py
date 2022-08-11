@@ -31,6 +31,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('station', models.CharField(default=None, max_length=50, verbose_name='Станция метро')),
+
             ],
             options={
                 'verbose_name': 'Станция метро',

@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils.translation import gettext_lazy as _
+p
 
 
 class Teacher(models.Model):

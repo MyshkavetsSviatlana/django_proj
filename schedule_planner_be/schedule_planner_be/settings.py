@@ -134,8 +134,6 @@ EMAIL_PORT = 587
 
 LOGIN_REDIRECT_URL = '/'
 
-
-
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
