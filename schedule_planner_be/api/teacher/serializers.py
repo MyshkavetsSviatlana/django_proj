@@ -21,3 +21,17 @@ class TeacherCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = '__all__'
+
+
+class TeacherUpdateSerializer(serializers.ModelSerializer):
+    """Добавление преподавателя"""
+    class Meta:
+        model = Teacher
+        fields = ['image', 'description']
+
+
+class TeacherDeleteSerializer(serializers.ModelSerializer):
+    """Добавление преподавателя"""
+    class Meta:
+        model = Teacher
+        fields = '__all__'
