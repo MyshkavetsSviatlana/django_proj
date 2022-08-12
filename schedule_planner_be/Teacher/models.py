@@ -18,7 +18,7 @@ class Teacher(models.Model):
     url = models.SlugField(max_length=160, unique=True, default=None)
 
     def __str__(self):
-        return self.name
+        return f"{self.surname} {self.name}"
 
     def get_absolute_url(self):
         return reverse('teacher_detail', kwargs={'slug': self.url})
@@ -46,14 +46,14 @@ class TeacherProfile(models.Model):
         verbose_name_plural = "Профили учителей"
 
 
-@receiver(post_save, sender=Teacher)
-def create_user_profile(sender, instance, created, **kwargs):
-    """Создание модели пользователя при регистрации"""
-    if created:
-        TeacherProfile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=Teacher)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+# @receiver(post_save, sender=Teacher)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     """Создание модели пользователя при регистрации"""
+#     if created:
+#         TeacherProfile.objects.create(user=instance)
+#
+#
+# @receiver(post_save, sender=Teacher)
+# def save_user_profile(sender, instance, **kwargs):
+#     instance.profile.save()
 
