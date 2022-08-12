@@ -11,4 +11,3 @@ urlpatterns = [
     path('<slug:slug>/', TeacherDetailView.as_view(), name='teacher_detail'),
     path('teacher_profile/<int:pk>/', ShowProfilePageView.as_view(), name='teacher_profile'),
     path('create_profile_page/', CreateProfilePageView.as_view(), name='create_teacher_profile'),
-]
