@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import TeacherListSerializer, TeacherDetailSerializer, TeacherCreateSerializer
+from .serializers import *
 from Teacher.models import Teacher
 
 
@@ -8,8 +8,8 @@ class TeacherListView(generics.ListAPIView):
     serializer_class = TeacherListSerializer
 
     def get_queryset(self):
-        users = Teacher.objects.all()
-        return users
+        teachers = Teacher.objects.all()
+        return teachers
 
 
 class TeacherDetailsView(generics.RetrieveAPIView):
@@ -18,6 +18,19 @@ class TeacherDetailsView(generics.RetrieveAPIView):
     serializer_class = TeacherDetailSerializer
 
 
-# class TeacherCreateView(generics.CreateAPIView):
-#     """Добавление преподавателя"""
-#     serializer_class = TeacherCreateSerializer
+class TeacherCreateView(generics.CreateAPIView):
+    """Добавление преподавателя"""
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherCreateSerializer
+
+
+class TeacherUpdateView(generics.UpdateAPIView):
+    """Добавление преподавателя"""
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherUpdateSerializer
+
+
+class TeacherDeleteView(generics.DestroyAPIView):
+    """Добавление преподавателя"""
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherUpdateSerializer

@@ -30,7 +30,7 @@ class TeacherUpdateView(UpdateView):
     """Изменение учителей"""
     model = Teacher
     template_name = 'Teacher/teacher_edit.html'
-    fields = ['prog_language', 'image', 'age', ]
+    fields = ['image', 'description']
     success_url = "/"
     slug_field = 'url'
 
