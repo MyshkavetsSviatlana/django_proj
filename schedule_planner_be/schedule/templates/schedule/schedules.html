@@ -1,11 +1,11 @@
-{% extends layout/basic.html %}
+{% extends 'layout/basic.html' %}
 
 {% block title %}Расписание курсов{% endblock %}
 
 {% block content %}
     <h1>Расписание курсов</h1>
 
-    {% if book_list %}
+    {% if schedule_list %}
     <ul>
         {% for schedule in schedule_list %}
         <li>

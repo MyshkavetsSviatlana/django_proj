@@ -1,8 +1,20 @@
 from django.forms import ModelForm
-from .models import Schedule
+from .models import Schedule, Location, SubwayStation
 
 
 class ScheduleForm(ModelForm):
     class Meta:
         model = Schedule
+        fields = '__all__'
+
+
+class LocationForm(ModelForm):
+    class Meta:
+        model = Location
+        fields = '__all__'
+
+
+class SubwayStationForm(ModelForm):
+    class Meta:
+        model = SubwayStation
         fields = '__all__'
