@@ -7,12 +7,11 @@
 <body>
     <h1> Details of Teacher </h1>
     <div>
-        <h2>{{ Teacher.name }}</h2>
-        <p>{{ Teacher.age }}</p>
-        <p>{{ Teacher.start_date }}</p>
-        <p>{{ Teacher.group_count }}</p>
-        <p>{{ Teacher.description}}</p>
-        <p>{{ Teacher.image}}</p>
+        <h2>{{ teacher.surname }} {{ teacher.name }} {{ teacher.fathers_name }}</h2>
+        <p>{{ teacher.age }}</p>
+        <p>{{ teacher.start_date }}</p>
+        <p>{{ teacher.group_count }}</p>
+        <p>{{ teacher.specialization}}</p>
     </div>
     <p><a href="{% url 'teacher_edit' teacher.url %}">+ Edit Teacher</a></p>
     <p><a href="{% url 'teacher_confirm_delete' teacher.url %}">+ Delete Teacher</a></p>

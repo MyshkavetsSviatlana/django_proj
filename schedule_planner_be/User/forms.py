@@ -7,8 +7,7 @@ from .models import User
 
 
 class UserCreationForm(forms.ModelForm):
-    """A form for creating new users. Includes all the required
-    fields, plus a repeated password."""
+    """Форма для создания нового пользователя"""
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput, validators=[
         RegexValidator(
             regex="^(?=.*[0-9].*)(?=.*[a-z].*)(?=.*[A-Z].*)[0-9a-zA-Z]{8,}$",
@@ -22,15 +21,15 @@ class UserCreationForm(forms.ModelForm):
         fields = ('email', 'first_name', 'last_name', 'image')
 
     def clean_passwords(self):
-        # Убедитесь, что две записи пароля совпадают
-        password1 = self.cleaned_data.get("password_1")
-        password2 = self.cleaned_data.get("password_2")
+        """Проверка на совпадение паролей"""
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
             raise ValidationError("Passwords don't match")
         return password2
 
     def save(self, commit=True):
-        # Сохранить предоставленный пароль в хешированном формате
+        """Сохранение предоставленного пароль в хешированном формате"""
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:

@@ -21,7 +21,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('Manager', 'Manager'),
         ('Teacher', 'Teacher')
     ]
-    role = models.CharField(_('Role'), max_length=15, choices=ROLE_CHOICES, default='______')
+    role = models.CharField(_('Role'), max_length=15, choices=ROLE_CHOICES, default='Teacher')
     first_name = models.CharField(_('First name'), max_length=50, blank=True)
     last_name = models.CharField(_('Last name'), max_length=100, blank=True)
     date_joined = models.DateTimeField(_('Date joined'), auto_now=True)
@@ -32,7 +32,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    object = CustomUserManager()
+    objects = CustomUserManager()
 
     def __str__(self):
         return f'{self.email}'
