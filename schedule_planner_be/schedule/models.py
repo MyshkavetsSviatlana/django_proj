@@ -47,4 +47,4 @@ class Schedule(models.Model):
         return reverse('course-detail', args=[str(self.id)])
 
     def __str__(self):
-        return f"{self.course}"
+        return f"{self.courses}"
