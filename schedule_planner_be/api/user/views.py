@@ -18,9 +18,7 @@ class UserDetailsView(generics.RetrieveAPIView):
     serializer_class = UserDetailSerializer
 
 
-# class UserCreateView(generics.CreateAPIView):
-#     """Добавление пользователя"""
-#     serializer_class = UserCreateSerializer
-
-
-
+class UserCreateView(generics.CreateAPIView):
+    """Добавление пользователя"""
+    queryset = User.object.all()
+    serializer_class = UserCreateSerializer
