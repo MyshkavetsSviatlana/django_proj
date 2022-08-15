@@ -2,7 +2,6 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, DeleteView, UpdateView
 from .forms import ScheduleForm, LocationForm, SubwayStationForm
 from .models import Location, SubwayStation, Schedule
-from Teacher.models import Teacher
 from course.models import Course, Comment
 
 
@@ -40,10 +39,9 @@ class ScheduleCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course'] = Course.objects.all()
-        context['location'] = Location.objects.all()
-        context['teacher'] = Teacher.objects.all()
-        context['comment'] = Comment.objects.all()
+        context['courses'] = Course.objects.all()
+        context['locations'] = Location.objects.all()
+        context['reviews'] = Comment.objects.all()
         return context
 
 
@@ -81,7 +79,7 @@ class LocationCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['subway'] = SubwayStation.objects.all()
+        context['station'] = SubwayStation.objects.all()
         return context
 
 
