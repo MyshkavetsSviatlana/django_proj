@@ -1,11 +1,17 @@
+
 import itertools
-from django.db import models
 from django.urls import reverse
-from multiselectfield import MultiSelectField
 from datetime import date, timedelta
+from audioop import reverse
+from django.db import models
+from django.utils import timezone
+from django.utils.datetime_safe import date
+from multiselectfield import MultiSelectField
+from django.core.exceptions import ValidationError
 
 from Teacher.models import Teacher
 from User.models import User
+
 
 
 class Course(models.Model):
@@ -139,6 +145,7 @@ class Course(models.Model):
         ("18:00", "18:00"),
         ("19:00", "19:00"),
     ]
+
     start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, default=None,
                                   max_length=5)
     # end_time = models.TimeField("End time", default=timezone.now)
