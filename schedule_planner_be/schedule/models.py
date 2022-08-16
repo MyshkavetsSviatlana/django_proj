@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse
 from course.models import Course, Comment
 
 
@@ -9,10 +9,6 @@ class SubwayStation(models.Model):
 
     def __str__(self):
         return f"станция метро {self.station}"
-
-    class Meta:
-        verbose_name = 'Станция метро'
-        verbose_name_plural = 'Станции метро'
 
 
 class Location(models.Model):
@@ -24,10 +20,6 @@ class Location(models.Model):
 
     def __str__(self):
         return f"{self.street}, {self.building}, {self.subway}, {self.city}"
-
-    class Meta:
-        verbose_name = 'Локация'
-        verbose_name_plural = 'Локации'
 
 
 class Classroom(models.Model):
@@ -44,17 +36,15 @@ class Classroom(models.Model):
 
 
 class Schedule(models.Model):
-    """Создание модели расписания"""
-
+    """Создание модели Расписание"""
     title = models.TextField(default=None)
     courses = models.ForeignKey(Course, on_delete=models.DO_NOTHING, verbose_name='Курсы')
     locations = models.ForeignKey(Location, on_delete=models.DO_NOTHING, verbose_name='Локации')
     reviews = models.ForeignKey(Comment, on_delete=models.DO_NOTHING, verbose_name='Комментарии')
     url = models.URLField(max_length=160, unique=True, default=None)
 
-    def __str__(self):
-        return f'{self.title}'
+    def get_absolute_url(self):
+        return reverse('course-detail', args=[str(self.id)])
 
-    class Meta:
-        verbose_name = 'Расписание'
-        verbose_name_plural = 'Расписания'
+    def __str__(self):
+        return f"{self.courses}"

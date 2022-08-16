@@ -15,7 +15,10 @@ urlpatterns = [
     path('api/v1/', include('api.urls')),
 ]
 
+
+urlpatterns += [
+    path("schedule/", include('schedule.urls')),
+]
+
 urlpatterns += doc_urls
-
-
 

@@ -1,13 +1,11 @@
+from audioop import reverse
 from django.db import models
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.datetime_safe import date
 from multiselectfield import MultiSelectField
 from django.core.exceptions import ValidationError
-
 from Teacher.models import Teacher
 from User.models import User
-
 
 
 def validate_start_day(value):
@@ -48,7 +46,6 @@ class Course(models.Model):
                                    default=None,
                                    max_length=50,
                                    )
-
     url = models.URLField(max_length=160, unique=True, default=None)
 
     def __str__(self):
@@ -65,7 +62,6 @@ class Course(models.Model):
 class Comment(models.Model):
     """Создание модели Комментарий"""
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING)
-
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     body = models.CharField(max_length=50)
     created = models.DateTimeField(auto_now_add=True)

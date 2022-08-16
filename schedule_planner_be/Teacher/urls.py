@@ -10,4 +10,3 @@ urlpatterns = [
     path('new/', TeacherCreateView.as_view(), name='teacher_form'),
     path('<slug:slug>/', TeacherDetailView.as_view(), name='teacher_detail'),
 ]
-
