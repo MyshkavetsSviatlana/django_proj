@@ -15,7 +15,7 @@ class Teacher(models.Model):
     course_name = models.CharField(_("Course name"), max_length=150)
     description = models.TextField(_("Description"))
     image = models.ImageField(_("Photo"), upload_to="Teachers/")
-    url = models.URLField(max_length=160, unique=True, default=None)
+    url = models.SlugField(max_length=160, unique=True, default=None)
 
     def __str__(self):
         return f"{self.surname} {self.name}"

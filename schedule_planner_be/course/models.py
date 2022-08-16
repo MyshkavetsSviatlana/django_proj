@@ -1,28 +1,18 @@
+import itertools
 from django.db import models
 from django.urls import reverse
-from django.utils.datetime_safe import date
 from multiselectfield import MultiSelectField
-from django.core.exceptions import ValidationError
 from datetime import date, timedelta
 
 from Teacher.models import Teacher
 from User.models import User
 
 
-def validate_start_day(value):
-    todaydate = date.today()
-    if value < todaydate:
-        raise ValidationError(
-            'Start day is in the past',
-            params={'value': value},
-        )
-
-
 class Course(models.Model):
     """Creates model Course"""
     course_name = models.CharField("Course name", max_length=50)
     teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING)
-    start_day = models.DateField("Course start day", default=date.today, validators=[validate_start_day])
+    start_day = models.DateField("Course start day", default=date.today)
 
     @property
     def start_day_isoweekday(self):
@@ -57,52 +47,77 @@ class Course(models.Model):
                                     max_length=63, default=None)
 
     @property
+    def all_course_days(self):
+        """Returns all course days"""
+        days_of_week = [float(item) for item in self.days_of_week]
+        days_of_week_in_chosen_order = []
+        for i in days_of_week:
+            if i != self.start_day_isoweekday:
+                days_of_week_in_chosen_order.append(int(i))
+            if i == self.start_day_isoweekday:
+                days_of_week_in_chosen_order.insert(0, int(i))
+        all_course_days_days_of_week = []
+        count = 1
+        for i in itertools.cycle(days_of_week_in_chosen_order):
+            if count > (self.number_of_lessons + 2):
+                break
+            all_course_days_days_of_week.append(i)
+            count += 1
+        all_course_days = []
+        all_course_days.append(self.start_day)
+        ind = 0
+        for _ in all_course_days_days_of_week:
+            if ind > self.number_of_lessons:
+                break
+            if all_course_days_days_of_week[ind + 1] - all_course_days_days_of_week[ind] > 0:
+                days = all_course_days_days_of_week[ind + 1] - all_course_days_days_of_week[ind]
+                td = timedelta(days=days)
+                all_course_days.append(all_course_days[ind] + td)
+            if all_course_days_days_of_week[ind + 1] - all_course_days_days_of_week[ind] == -1:
+                days = 6
+                td = timedelta(days=days)
+                all_course_days.append(all_course_days[ind] + td)
+            if all_course_days_days_of_week[ind + 1] - all_course_days_days_of_week[ind] == -2:
+                days = 5
+                td = timedelta(days=days)
+                all_course_days.append(all_course_days[ind] + td)
+            if all_course_days_days_of_week[ind + 1] - all_course_days_days_of_week[ind] == -3:
+                days = 4
+                td = timedelta(days=days)
+                all_course_days.append(all_course_days[ind] + td)
+            if all_course_days_days_of_week[ind + 1] - all_course_days_days_of_week[ind] == -4:
+                days = 3
+                td = timedelta(days=days)
+                all_course_days.append(all_course_days[ind] + td)
+            if all_course_days_days_of_week[ind + 1] - all_course_days_days_of_week[ind] == -5:
+                days = 2
+                td = timedelta(days=days)
+                all_course_days.append(all_course_days[ind] + td)
+            if all_course_days_days_of_week[ind + 1] - all_course_days_days_of_week[ind] == -6:
+                days = 1
+                td = timedelta(days=days)
+                all_course_days.append(all_course_days[ind] + td)
+            ind += 1
+        all_course_days_str = [str(i) for i in all_course_days]
+        return all_course_days_str
+
+    @property
     def end_day(self):
-        """Returns end date"""
-        lst = [float(item) for item in self.days_of_week]
-        a = max(lst) - min(lst)
-        if self.number_of_lessons % 2 == 0:
-            days = (self.number_of_lessons/2 - 1) * 7 + a
-            td = timedelta(days=days)
-            end_day = self.start_day + td
-            return end_day
-        if self.number_of_lessons % 2 != 0:
-            days = (self.number_of_lessons//2) * 7
-            td = timedelta(days=days)
-            end_day = self.start_day + td
-            return end_day
+        """Returns course end date"""
+        end_day = self.all_course_days[-3]
+        return end_day
 
     @property
     def transit_day_1(self):
-        """Returns transit day 1"""
-        lst = [float(item) for item in self.days_of_week]
-        a = max(lst) - min(lst)
-        if self.number_of_lessons % 2 == 0:
-            days = (self.number_of_lessons/2) * 7
-            td = timedelta(days=days)
-            end_day = self.start_day + td
-            return end_day
-        if self.number_of_lessons % 2 != 0:
-            days = (self.number_of_lessons//2) * 7 + a
-            td = timedelta(days=days)
-            end_day = self.start_day + td
-            return end_day
+        """Returns course transit day 1"""
+        transit_day_1 = self.all_course_days[-2]
+        return transit_day_1
 
     @property
     def transit_day_2(self):
-        """Returns transit day 2"""
-        lst = [float(item) for item in self.days_of_week]
-        a = max(lst) - min(lst)
-        if self.number_of_lessons % 2 == 0:
-            days = (self.number_of_lessons/2) * 7 + a
-            td = timedelta(days=days)
-            end_day = self.start_day + td
-            return end_day
-        if self.number_of_lessons % 2 != 0:
-            days = (self.number_of_lessons//2) * 7 + 7
-            td = timedelta(days=days)
-            end_day = self.start_day + td
-            return end_day
+        """Returns course transit day 1"""
+        transit_day_2 = self.all_course_days[-1]
+        return transit_day_2
 
     location = models.ForeignKey("schedule.Classroom", on_delete=models.DO_NOTHING)
 
@@ -139,18 +154,13 @@ class Course(models.Model):
         if self.start_time in evening_course:
             return "Evening schedule"
 
-    url = models.URLField(max_length=160, unique=True, default=None)
+    url = models.SlugField(max_length=160, unique=True, default=None)
 
     def __str__(self):
-        return f"{self.course_name}, {self.start_day}, {self.location}"
+        return f"{self.course_name}, {self.start_day}, {self.start_time}, {self.location}"
 
     def get_absolute_url(self):
         return reverse('course_detail', kwargs={'slug': self.url})
-
-    # def save(self, *args, **kwargs):
-    #     if self.course_type is None:
-    #         course_type = self.course_type
-    #     super(Course, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Курс"
