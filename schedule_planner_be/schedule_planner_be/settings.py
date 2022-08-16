@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'rest_framework_swagger',
+    "django_agenda",
+
+
 ]
 
 MIDDLEWARE = [
