@@ -1,12 +1,10 @@
-
 import itertools
 from django.urls import reverse
-from datetime import date, timedelta
+from datetime import timedelta
 from audioop import reverse
 from django.db import models
 from django.utils.datetime_safe import date
 from multiselectfield import MultiSelectField
-from django.core.exceptions import ValidationError
 
 from Teacher.models import Teacher
 from User.models import User
@@ -158,8 +156,6 @@ class Course(models.Model):
     #                 all_start_time_options.remove(i)
     #     start_time_options = [(i, i) for i in all_start_time_options]
     #     return start_time_options
-
-    start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, default=" ", max_length=5, blank=True)
 
     start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, default=None,
                                   max_length=5)
