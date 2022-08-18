@@ -12,12 +12,13 @@ class Course(models.Model):
     """Creates model Course"""
     course_name = models.CharField("Course name", max_length=50)
     teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING)
-    start_day = models.DateField("Course start day", default=date.today)
+    start_date = models.DateField("Course start date", default=date.today)
+    start_day_of_week = models.CharField("Start day of week", max_length=9, default="", blank=True)
 
-    @property
+    # @property
     def start_day_isoweekday(self):
         """Returns start date day of the week"""
-        dw1 = self.start_day.isoweekday()
+        dw1 = self.start_date.isoweekday()
         # if dw1 == 1:
         #     return "Monday"
         # if dw1 == 2:
@@ -34,6 +35,10 @@ class Course(models.Model):
         #     return "Sunday"
         return int(dw1)
 
+    def save(self, *args, **kwargs):
+        self.start_day_of_week = self.start_date.isoweekday()
+        super(Course, self).save(*args, **kwargs)
+
     DAYS_OF_WEEK = (
         (1, 1),
         (2, 2),
@@ -44,7 +49,7 @@ class Course(models.Model):
         (7, 7),
     )
     days_of_week = MultiSelectField("Days of the week", choices=DAYS_OF_WEEK, max_choices=7,
-                                    max_length=63, default=None)
+                                    max_length=63)
 
     @property
     def all_course_days(self):
@@ -64,7 +69,7 @@ class Course(models.Model):
             all_course_days_days_of_week.append(i)
             count += 1
         all_course_days = []
-        all_course_days.append(self.start_day)
+        all_course_days.append(self.start_date)
         ind = 0
         for _ in all_course_days_days_of_week:
             if ind > self.number_of_lessons:
@@ -102,33 +107,32 @@ class Course(models.Model):
         return all_course_days_str
 
     @property
-    def end_day(self):
+    def end_date(self):
         """Returns course end date"""
-        end_day = self.all_course_days[-3]
-        return end_day
+        end_date = self.all_course_days[-3]
+        return end_date
 
     @property
-    def transit_day_1(self):
+    def transit_date_1(self):
         """Returns course transit day 1"""
-        transit_day_1 = self.all_course_days[-2]
-        return transit_day_1
+        transit_date_1 = self.all_course_days[-2]
+        return transit_date_1
 
     @property
-    def transit_day_2(self):
+    def transit_date_2(self):
         """Returns course transit day 1"""
-        transit_day_2 = self.all_course_days[-1]
-        return transit_day_2
+        transit_date_2 = self.all_course_days[-1]
+        return transit_date_2
 
     location = models.ForeignKey("schedule.Classroom", on_delete=models.DO_NOTHING)
 
     @property
-    def loc_start_day_time(self):
-        return str(self.location) + str(self.start_day) + str(self.days_of_week) + str(self.start_time)
+    def loc_start_date_time(self):
+        return str(self.location) + str(self.all_course_days) + str(self.start_time)
 
     START_TIME_OPTIONS = [
         ("09:00", "09:00"),
         ("10:00", "10:00"),
-        ("10:30", "10:30"),
         ("11:00", "11:00"),
         ("12:00", "12:00"),
         ("13:00", "13:00"),
@@ -139,9 +143,19 @@ class Course(models.Model):
         ("18:00", "18:00"),
         ("19:00", "19:00"),
     ]
-    start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, default=None,
-                                  max_length=5)
-    # end_time = models.TimeField("End time", default=timezone.now)
+
+    # def start_time_options(self, *args, **kwargs):
+    #     all_start_time_options = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00",
+    #                           "17:00", "18:00", "19:00"]
+    #     all_reserved_options = [str(item) for item in Course.objects.filter(start_date=self.start_date, location=self.location)]
+    #     for a in all_reserved_options:
+    #         for i in all_start_time_options:
+    #             if i in a:
+    #                 all_start_time_options.remove(i)
+    #     start_time_options = [(i, i) for i in all_start_time_options]
+    #     return start_time_options
+
+    start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, default=" ", max_length=5, blank=True)
     number_of_lessons = models.PositiveSmallIntegerField("Number of lessons", default=0)
 
     @property
@@ -157,7 +171,7 @@ class Course(models.Model):
     url = models.SlugField(max_length=160, unique=True, default=None)
 
     def __str__(self):
-        return f"{self.course_name}, {self.start_day}, {self.start_time}, {self.location}"
+        return f"{self.course_name}, {self.start_date}, {self.start_time}, {self.location}"
 
     def get_absolute_url(self):
         return reverse('course_detail', kwargs={'slug': self.url})
@@ -165,7 +179,7 @@ class Course(models.Model):
     class Meta:
         verbose_name = "Курс"
         verbose_name_plural = "Курсы"
-        unique_together = ('start_day', 'days_of_week', 'location', 'start_time')
+        unique_together = ('start_date', 'days_of_week', 'location', 'start_time')
 
 
 class Comment(models.Model):
