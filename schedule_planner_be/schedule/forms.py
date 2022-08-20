@@ -17,4 +17,4 @@ class LocationForm(ModelForm):
 class SubwayStationForm(ModelForm):
     class Meta:
         model = SubwayStation
-        fields = '__all__'
+        fields = ['station', ]

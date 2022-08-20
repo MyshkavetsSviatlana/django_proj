@@ -3,7 +3,7 @@
 {% block title %}Удалить станцию метро :: Метро{% endblock %}
 
 {% block content %}
-<h1>Вы уверены, что хотите удалить станцию метро {{ subway }}?</h1>
+<h1>Вы уверены, что хотите удалить станцию метро {{ subwaystation }}?</h1>
 <form method='post'>
     {% csrf_token %}
     <input type='submit' value='Удалить'>

@@ -8,17 +8,17 @@ class UserListView(generics.ListAPIView):
     serializer_class = UserListSerializer
 
     def get_queryset(self):
-        users = User.object.all()
+        users = User.objects.all()
         return users
 
 
 class UserDetailsView(generics.RetrieveAPIView):
     """Вывод полного описания пользователя"""
-    queryset = User.object.filter()
+    queryset = User.objects.filter()
     serializer_class = UserDetailSerializer
 
 
 class UserCreateView(generics.CreateAPIView):
     """Добавление пользователя"""
-    queryset = User.object.all()
+    queryset = User.objects.all()
     serializer_class = UserCreateSerializer

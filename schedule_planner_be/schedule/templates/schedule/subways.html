@@ -5,11 +5,11 @@
 {% block content %}
     <h1>Список станций метро</h1>
 
-    {% if subway_list %}
+    {% if subwaystation_list %}
     <ul>
-        {% for subway in subway_list %}
+        {% for station in subwaystation_list %}
         <li>
-            <a href="{% url 'subway-detail' subway.pk %}">{{ location }}</a>
+            <a href="{% url 'subway-detail' station.pk %}">{{ station }}</a>
         </li>
         {% endfor %}
     </ul>

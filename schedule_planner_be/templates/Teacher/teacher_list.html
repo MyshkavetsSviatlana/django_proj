@@ -9,7 +9,7 @@
     <a href="{% url 'teacher_form' %}"> Create new Teacher </a>
     <div>
         {% for Teacher in object_list %}
-        <h2>{{ Teacher.name }}</h2>
+        <h2>{{ Teacher.surname }} {{ Teacher.name }}</h2>
         {% endfor %}
     </div>
 </body>
