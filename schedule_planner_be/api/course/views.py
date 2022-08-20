@@ -1,24 +1,23 @@
-from django.db import models
-from rest_framework import generics
-from api.course.serializers import CourseListSerializer
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import permissions, viewsets, renderers
+from api.course.serializers import CourseSerializer
 from course.models import Course
 
 
-class CourseListView(generics.ListAPIView):
-    """Вывод списка курсов"""
-    serializer_class = CourseListSerializer
+class CourseViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
 
-    def get_queryset(self):
-        courses = Course.objects.all()
-        return courses
+    Additionally we also provide an extra `highlight` action.
+    """
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+    #                       IsOwnerOrReadOnly]
 
-
-class CourseDetailsView(generics.RetrieveAPIView):
-    """Вывод полного описания курса"""
-    queryset = Course.objects.filter()
-    serializer_class = CourseListSerializer
-
-# class CourseCreateView(generics.CreateAPIView):
-#     """Добавление курса"""
-#     serializer_class = CourseCreateSerializer
-
+    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
+    def highlight(self, request, *args, **kwargs):
+        course = self.get_object()
+        return Response(course.highlighted)

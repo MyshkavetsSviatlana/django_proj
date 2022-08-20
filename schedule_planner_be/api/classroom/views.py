@@ -1,24 +1,28 @@
-from django.db import models
-from rest_framework import generics
-from api.classroom.serializers import ClassroomListSerializer
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import permissions, viewsets, renderers
+from api.classroom.serializers import ClassroomSerializer
 from schedule.models import Classroom
 
 
-class ClassroomListView(generics.ListAPIView):
-    """Вывод списка курсов"""
-    serializer_class = ClassroomListSerializer
+class ClassroomViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
 
-    def get_queryset(self):
-        classrooms = Classroom.objects.all()
-        return classrooms
+    Additionally we also provide an extra `highlight` action.
+    """
+    queryset = Classroom.objects.all()
+    serializer_class = ClassroomSerializer
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+    #                       IsOwnerOrReadOnly]
 
+    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
+    def highlight(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
 
-class ClassroomDetailsView(generics.RetrieveAPIView):
-    """Вывод полного описания курса"""
-    queryset = Classroom.objects.filter()
-    serializer_class = ClassroomListSerializer
+    # def perform_create(self, serializer):
+    #     serializer.save(owner=self.request.user)
 
-# class CourseCreateView(generics.CreateAPIView):
-#     """Добавление курса"""
-#     serializer_class = CourseCreateSerializer
 

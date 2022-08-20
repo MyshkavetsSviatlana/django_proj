@@ -8,3 +8,4 @@ sqlparse==0.4.2
 
 djangorestframework~=3.13.1
 tzdata=="2022.2"
+requests~=2.27.1

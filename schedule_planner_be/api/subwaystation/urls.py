@@ -1,8 +1,23 @@
 from django.urls import path
-from . import views
+from rest_framework import renderers
+from api.subwaystation.views import SubwayStationViewSet
+
+subwaystation_list = SubwayStationViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+subwaystation_detail = SubwayStationViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
+subwaystation_highlight = SubwayStationViewSet.as_view({
+    'get': 'highlight'
+}, renderer_classes=[renderers.StaticHTMLRenderer])
 
 urlpatterns = [
-    path('', views.SubwayStationListView.as_view()),
-    path('<int:pk>/', views.SubwayStationDetailsView.as_view()),
-    #     # path('new/', views.UserCreateView.as_view()),
+    path('', subwaystation_list, name='subwaystation-list'),
+    path('<int:pk>/', subwaystation_detail, name='subwaystation-detail'),
+    path('<int:pk>/highlight/', subwaystation_highlight, name='subwaystation-highlight'),
 ]
