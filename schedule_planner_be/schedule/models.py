@@ -8,7 +8,7 @@ class SubwayStation(models.Model):
     station = models.CharField('Subway station', max_length=50, default=None)
 
     def __str__(self):
-        return f"станция метро {self.station}"
+        return f"с/м {self.station}"
 
 
 class Location(models.Model):

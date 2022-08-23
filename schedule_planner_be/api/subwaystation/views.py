@@ -1,23 +1,42 @@
-from rest_framework import generics
-from api.subwaystation.serializers import SubwayStationListSerializer
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, BasePermission, SAFE_METHODS
+from rest_framework.response import Response
+from rest_framework import viewsets, renderers
+
+from User.models import User
+from api.subwaystation.serializers import SubwayStationSerializer
 from schedule.models import SubwayStation
 
 
-class SubwayStationListView(generics.ListAPIView):
-    """Вывод списка станций метро"""
-    serializer_class = SubwayStationListSerializer
-
-    def get_queryset(self):
-        subwaystation = SubwayStation.objects.all()
-        return subwaystation
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
 
 
-class SubwayStationDetailsView(generics.RetrieveAPIView):
-    """Вывод полного описания станции метро"""
-    queryset = SubwayStation.objects.filter()
-    serializer_class = SubwayStationListSerializer
+class SubwayStationViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
 
-# class CourseCreateView(generics.CreateAPIView):
-#     """Добавление курса"""
-#     serializer_class = CourseCreateSerializer
+    Additionally we also provide an extra `highlight` action.
+    """
+    queryset = SubwayStation.objects.all()
+    serializer_class = SubwayStationSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            permission_classes = [IsAdminUser]
+        else:
+            permission_classes = [ReadOnly]
+        return [permission() for permission in permission_classes]
+
+    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
+    def highlight(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
+
+
 

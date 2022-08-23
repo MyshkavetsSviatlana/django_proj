@@ -29,7 +29,7 @@ class CourseUpdateView(UpdateView):
     """Изменение курса"""
     model = Course
     template_name = 'course/course_edit.html'
-    fields = ['time', 'location']
+    fields = '__all__'
     success_url = "/"
     slug_field = 'url'
 
@@ -46,13 +46,13 @@ class CourseDeleteView(DeleteView):
 class CommentListView(ListView):
     """Вывод списка комментариев"""
     model = Comment
-    template_name = 'comment/comment_list.html'
+    template_name = 'course/comment_list.html'
 
 
 class CommentCreateView(CreateView):
     """Создание нового комментария"""
     model = Comment
-    template_name = 'comment/comment_form.html'
+    template_name = 'course/comment_form.html'
     fields = '__all__'
     success_url = "/"
 
@@ -60,7 +60,23 @@ class CommentCreateView(CreateView):
 class CommentDeleteView(DeleteView):
     """Удаление комментария"""
     model = Comment
-    template_name = 'comment/comment_confirm_delete.html'
+    template_name = 'course/comment_confirm_delete.html'
     fields = '__all__'
     success_url = "/"
+    slug_field = 'url'
+
+
+class CommentUpdateView(UpdateView):
+    """Изменение курса"""
+    model = Comment
+    template_name = 'course/comment_edit.html'
+    fields = '__all__'
+    success_url = "/"
+    slug_field = 'url'
+
+
+class CommentDetailView(DetailView):
+    """Вывод полного описания курса"""
+    model = Course
+    template_name = 'course/comment_detail.html'
     slug_field = 'url'

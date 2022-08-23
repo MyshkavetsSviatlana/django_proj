@@ -9,7 +9,7 @@
     <a href="{% url 'course_form' %}"> Create new course </a>
     <div>
         {% for course in object_list %}
-        <h2>{{ course.course_name }}</h2>
+        <h2><a href="{% url "course_detail" course.id %}">{{ course.course_name }}</a>, start date:{{course.start_date}}</h2>
         <h5>{{ course.start_day }}</h5>
         {% endfor %}
     </div>

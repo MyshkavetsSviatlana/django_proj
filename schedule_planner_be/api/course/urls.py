@@ -1,8 +1,23 @@
 from django.urls import path
-from . import views
+from rest_framework import renderers
+from api.course.views import CourseViewSet
+
+course_list = CourseViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+course_detail = CourseViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
+course_highlight = CourseViewSet.as_view({
+    'get': 'highlight'
+}, renderer_classes=[renderers.StaticHTMLRenderer])
 
 urlpatterns = [
-    path('', views.CourseListView.as_view()),
-    path('<int:pk>/', views.CourseDetailsView.as_view()),
-    #     # path('new/', views.UserCreateView.as_view()),
+    path('', course_list, name='course-list'),
+    path('<int:pk>/', course_detail, name='course-detail'),
+    path('<int:pk>/highlight/', course_highlight, name='course-highlight'),
 ]
