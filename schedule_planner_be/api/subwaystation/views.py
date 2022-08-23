@@ -1,8 +1,16 @@
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework import viewsets, renderers
+
+from User.models import User
 from api.subwaystation.serializers import SubwayStationSerializer
 from schedule.models import SubwayStation
+
+
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
 
 
 class SubwayStationViewSet(viewsets.ModelViewSet):
@@ -14,8 +22,16 @@ class SubwayStationViewSet(viewsets.ModelViewSet):
     """
     queryset = SubwayStation.objects.all()
     serializer_class = SubwayStationSerializer
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-    #                       IsOwnerOrReadOnly]
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            permission_classes = [IsAdminUser]
+        else:
+            permission_classes = [ReadOnly]
+        return [permission() for permission in permission_classes]
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
     def highlight(self, request, *args, **kwargs):

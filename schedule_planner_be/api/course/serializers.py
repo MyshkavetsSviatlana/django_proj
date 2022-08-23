@@ -3,9 +3,18 @@ from course.models import Course
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    """Список курсов"""
-    class Meta:
+    DAYS_OF_WEEK = (
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+        (6, 6),
+        (7, 7),
+    )
+    days_of_week = serializers.MultipleChoiceField(choices=DAYS_OF_WEEK)
 
+    class Meta:
         model = Course
         fields = '__all__'
 

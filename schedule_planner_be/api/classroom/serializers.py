@@ -8,3 +8,6 @@ class ClassroomSerializer(serializers.ModelSerializer):
 
         model = Classroom
         fields = '__all__'
+
+    def create(self, validated_data):
+        return Classroom.objects.create(**validated_data)
