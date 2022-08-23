@@ -21,16 +21,16 @@ class TeacherDetailsView(generics.RetrieveAPIView):
 class TeacherCreateView(generics.CreateAPIView):
     """Добавление преподавателя"""
     queryset = Teacher.objects.all()
-    serializer_class = TeacherCreateSerializer
+    serializer_class = TeacherDetailSerializer
 
 
 class TeacherUpdateView(generics.UpdateAPIView):
-    """Добавление преподавателя"""
+    """Изменение преподавателя"""
     queryset = Teacher.objects.all()
     serializer_class = TeacherUpdateSerializer
 
 
 class TeacherDeleteView(generics.DestroyAPIView):
-    """Добавление преподавателя"""
+    """Удаление преподавателя"""
     queryset = Teacher.objects.all()
-    serializer_class = TeacherUpdateSerializer
+    serializer_class = TeacherDetailSerializer

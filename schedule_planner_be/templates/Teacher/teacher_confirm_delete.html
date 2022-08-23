@@ -9,7 +9,7 @@
     <h1>Delete Teacher</h1>
     <form action="" method="post">
         {% csrf_token %}
-        <p>Are you sure you want to delete "{{ Teacher.Teacher_name }}"?</p>
+        <p>Are you sure you want to delete "{{ teacher.surname }} {{ teacher.name }}"?</p>
         <input type="submit" value="Confirm" />
     </form>
 </div>
