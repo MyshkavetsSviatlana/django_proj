@@ -16,12 +16,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     ])
     ROLE_CHOICES = [
-        ('SuperAdmin', 'SuperAdmin'),
+        ('Super Admin', 'Super Admin'),
         ('Administrator', 'Administrator'),
         ('Manager', 'Manager'),
-        ('Teacher', 'Teacher')
     ]
-    role = models.CharField(_('Role'), max_length=15, choices=ROLE_CHOICES, default='Teacher')
+    role = models.CharField(_('Role'), max_length=15, choices=ROLE_CHOICES, default='Manager')
     first_name = models.CharField(_('First name'), max_length=50, blank=True)
     last_name = models.CharField(_('Last name'), max_length=100, blank=True)
     date_joined = models.DateTimeField(_('Date joined'), auto_now=True)
