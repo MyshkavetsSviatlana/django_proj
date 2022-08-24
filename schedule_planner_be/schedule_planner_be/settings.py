@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'rest_framework_swagger',
+    'multiselectfield',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -137,5 +139,8 @@ LOGOUT_REDIRECT_URL = '/'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+    'DEFAULT_Filter_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
 }

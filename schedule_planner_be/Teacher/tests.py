@@ -8,12 +8,14 @@ class TeacherTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
             email='test@email.com',
-            password='Password1234'
+            password='Password1234',
+            role='Super Admin'
         )
         self.teacher = Teacher.objects.create(
             surname='Зубрицкий',
             name='Александр',
             specialization='Питон',
+            course_name='Python',
             url='1',
         )
 
@@ -28,15 +30,18 @@ class TeacherTests(TestCase):
         self.assertEqual(f'{self.teacher.surname}', 'Зубрицкий')
         self.assertEqual(f'{self.teacher.name}', 'Александр')
         self.assertEqual(f'{self.teacher.specialization}', 'Питон')
+        self.assertEqual(f'{self.teacher.course_name}', 'Python')
         self.assertEqual(f'{self.teacher.url}', '1')
 
     def test_teacher_list_view(self):
+        self.client.login(email='test@email.com', password='Password1234')
         response = self.client.get(reverse('teacher_list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Зубрицкий')
         self.assertTemplateUsed(response, 'Teacher/teacher_list.html')
 
     def test_teacher_detail_view(self):
+        self.client.login(email='test@email.com', password='Password1234')
         response = self.client.get('/teachers/1/')
         no_response = self.client.get('/teachers/12345/')
         self.assertEqual(response.status_code, 200)
@@ -45,26 +50,32 @@ class TeacherTests(TestCase):
         self.assertTemplateUsed(response, 'Teacher/teacher_detail.html')
 
     def test_teacher_create_view(self):
+        self.client.login(email='test@email.com', password='Password1234')
         response = self.client.post(reverse('teacher_form'), data={
             'surname': 'Новый',
             'name': 'Преподаватель',
             'specialization': 'Питон',
+            'course_name': ['Основы разработки сайтов', 'Python'],
             'url': '2'
         })
         self.assertEqual(Teacher.objects.count(), 2)
         self.assertRedirects(response, "/teachers/")
 
     def test_teacher_update_view(self):
+        self.client.login(email='test@email.com', password='Password1234')
         response = self.client.post(reverse('teacher_edit', args='1'), {
             'surname': 'Изменение',
             'name': 'Преподавателя',
             'specialization': 'Стажировка',
+            'course_name': ['Python']
         })
-        self.assertEqual(response.status_code, 302)
         self.teacher.refresh_from_db()
         self.assertEqual(self.teacher.specialization, 'Стажировка')
+        self.assertEqual(self.teacher.name, 'Преподавателя')
+        self.assertRedirects(response, "/teachers/")
 
     def test_teacher_delete_view(self):
+        self.client.login(email='test@email.com', password='Password1234')
         response = self.client.get(
             reverse('teacher_confirm_delete', args='1'))
         self.assertContains(response, 'Are you sure you want to delete')

@@ -1,24 +1,19 @@
 from rest_framework import generics
-from .serializers import UserListSerializer, UserDetailSerializer, UserCreateSerializer
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from .serializers import UserListSerializer, UserCreateSerializer
 from User.models import User
 
 
 class UserListView(generics.ListAPIView):
     """Вывод списка пользователей"""
     serializer_class = UserListSerializer
-
-    def get_queryset(self):
-        users = User.objects.all()
-        return users
-
-
-class UserDetailsView(generics.RetrieveAPIView):
-    """Вывод полного описания пользователя"""
-    queryset = User.objects.filter()
-    serializer_class = UserDetailSerializer
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
 
 
 class UserCreateView(generics.CreateAPIView):
     """Добавление пользователя"""
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
+    permission_classes = [AllowAny]
+

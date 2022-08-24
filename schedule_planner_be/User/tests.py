@@ -61,6 +61,7 @@ class SignupPageTests(TestCase):
             'password2': '123456Aa',
             'first_name': 'Новый',
             'last_name': 'Пользователь',
+            'role': 'Super Admin'
         })
         self.assertEqual(User.objects.count(), 1)
         self.assertRedirects(response, "/")

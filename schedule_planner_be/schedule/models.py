@@ -41,7 +41,7 @@ class Schedule(models.Model):
     courses = models.ForeignKey(Course, on_delete=models.DO_NOTHING, verbose_name='Курсы')
     locations = models.ForeignKey(Location, on_delete=models.DO_NOTHING, verbose_name='Локации')
     reviews = models.ForeignKey(Comment, on_delete=models.DO_NOTHING, verbose_name='Комментарии')
-    url = models.URLField(max_length=160, unique=True, default=None)
+    url = models.SlugField(max_length=160, unique=True, default=None)
 
     def get_absolute_url(self):
         return reverse('course-detail', args=[str(self.id)])
