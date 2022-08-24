@@ -25,7 +25,7 @@ class Teacher(models.Model):
     ])
     fathers_name = models.CharField(_("Father's name"), max_length=50, blank=True, validators=[
         RegexValidator(
-            regex="^[А-яа-я-/s]{1,50}$",
+            regex="^[А-яа-я-\s]{1,50}$",
             message=_("Write correct father's name"),
             code=_('invalid_fathers_name')
         ),
