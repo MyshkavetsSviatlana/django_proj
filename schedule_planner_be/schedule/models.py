@@ -10,6 +10,10 @@ class SubwayStation(models.Model):
     def __str__(self):
         return f"станция метро {self.station}"
 
+    class Meta:
+        verbose_name = 'Станция метро'
+        verbose_name_plural = 'Станции метро'
+
 
 class Location(models.Model):
     """Создание модели Локация"""
@@ -20,6 +24,10 @@ class Location(models.Model):
 
     def __str__(self):
         return f"{self.street}, {self.building}, {self.subway}, {self.city}"
+
+    class Meta:
+        verbose_name = 'Локация'
+        verbose_name_plural = 'Локации'
 
 
 class Classroom(models.Model):
@@ -48,3 +56,7 @@ class Schedule(models.Model):
 
     def __str__(self):
         return f"{self.courses}"
+
+    class Meta:
+        verbose_name = 'Расписание'
+        verbose_name_plural = 'Расписания'

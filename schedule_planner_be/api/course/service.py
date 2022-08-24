@@ -13,4 +13,4 @@ class CourseFilter(filters.FilterSet):
 
     class Meta:
         model = Course
-        fields = ['course_name', 'teacher', 'location', 'all_course_days']
+        fields = ['course_name', 'teacher', 'location']
