@@ -8,9 +8,9 @@ from api.subwaystation.serializers import SubwayStationSerializer
 from schedule.models import SubwayStation
 
 
-class ReadOnly(BasePermission):
-    def has_permission(self, request, view):
-        return request.method in SAFE_METHODS
+# class ReadOnly(BasePermission):
+#     def has_permission(self, request, view):
+#         return request.method in SAFE_METHODS
 
 
 class SubwayStationViewSet(viewsets.ModelViewSet):
@@ -23,15 +23,15 @@ class SubwayStationViewSet(viewsets.ModelViewSet):
     queryset = SubwayStation.objects.all()
     serializer_class = SubwayStationSerializer
 
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permission_classes = [IsAdminUser]
-        else:
-            permission_classes = [ReadOnly]
-        return [permission() for permission in permission_classes]
+    # def get_permissions(self):
+    #     """
+    #     Instantiates and returns the list of permissions that this view requires.
+    #     """
+    #     if User.role == 'Super Admin':
+    #         permission_classes = [IsAdminUser]
+    #     else:
+    #         permission_classes = [ReadOnly]
+    #     return [permission() for permission in permission_classes]
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
     def highlight(self, request, *args, **kwargs):

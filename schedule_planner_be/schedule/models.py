@@ -37,14 +37,13 @@ class Classroom(models.Model):
         verbose_name_plural = 'Аудитории'
         unique_together = ('classroom', 'location')
 
-
 class Schedule(models.Model):
     """Создание модели Расписание"""
 
     title = models.TextField(default=None)
+    lesson_date = models.CharField(max_length=10, default=" ")
     courses = models.ForeignKey(Course, on_delete=models.DO_NOTHING, verbose_name='Курсы')
     locations = models.ForeignKey(Location, on_delete=models.DO_NOTHING, verbose_name='Локации')
-    reviews = models.ForeignKey(Comment, on_delete=models.DO_NOTHING, verbose_name='Комментарии')
     url = models.URLField(max_length=160, unique=True, default=None)
 
     def get_absolute_url(self):

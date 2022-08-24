@@ -8,10 +8,10 @@ from User.models import User
 from api.classroom.serializers import ClassroomSerializer
 from schedule.models import Classroom
 
-
-class ReadOnly(BasePermission):
-    def has_permission(self, request, view):
-        return request.method in SAFE_METHODS
+#
+# class ReadOnly(BasePermission):
+#     def has_permission(self, request, view):
+#         return request.method in SAFE_METHODS
 
 
 class ClassroomViewSet(viewsets.ModelViewSet):
@@ -24,16 +24,16 @@ class ClassroomViewSet(viewsets.ModelViewSet):
     queryset = Classroom.objects.all()
     serializer_class = ClassroomSerializer
 
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-
-        if User.role == 'SuperAdmin':
-            permission_classes = [IsAdminUser]
-        else:
-            permission_classes = [ReadOnly]
-        return [permission() for permission in permission_classes]
+    # def get_permissions(self):
+    #     """
+    #     Instantiates and returns the list of permissions that this view requires.
+    #     """
+    #
+    #     if User.role == 'Super Admin':
+    #         permission_classes = [IsAdminUser]
+    #     else:
+    #         permission_classes = [ReadOnly]
+    #     return [permission() for permission in permission_classes]
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
     def highlight(self, request, *args, **kwargs):

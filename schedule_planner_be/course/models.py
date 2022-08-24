@@ -4,7 +4,7 @@ from datetime import timedelta
 from audioop import reverse
 from django.db import models
 from django.utils.datetime_safe import date
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator
 from multiselectfield import MultiSelectField
 
 from Teacher.models import Teacher
