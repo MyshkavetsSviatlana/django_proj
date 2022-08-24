@@ -20,3 +20,4 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Course.objects.create(**validated_data)
+

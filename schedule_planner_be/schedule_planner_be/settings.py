@@ -42,10 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'rest_framework_swagger',
-    "django_agenda",
-    'rest_framework.authtoken'
-
-
+    'multiselectfield',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -140,16 +138,9 @@ LOGOUT_REDIRECT_URL = '/'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
-    'TEST_REQUEST_RENDERER_CLASSES': [
-        'rest_framework.renderers.MultiPartRenderer',
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.TemplateHTMLRenderer'],
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    )
-
+    'DEFAULT_Filter_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
 }
