@@ -1,0 +1,19 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %}Аудитории{% endblock %}
+
+{% block content %}
+    <h1>Аудитории</h1>
+
+    {% if classroom_list %}
+    <ul>
+        {% for classroom in classroom_list %}
+        <li>
+            <a href="{% url 'classroom-detail' classroom.pk %}">{{ classroom }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>Классы отсутствуют.</p>
+    {% endif %}
+{% endblock %}
