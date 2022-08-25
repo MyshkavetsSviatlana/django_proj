@@ -1,19 +1,13 @@
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, BasePermission, SAFE_METHODS
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import permissions, viewsets, renderers, generics
-from User.models import User
 from api.course.serializers import CourseSerializer
 from course.models import Course
 from django_filters.rest_framework import DjangoFilterBackend
+
+from .permissions import CoursePermissionsMixin
 from .service import CourseFilter
-
-
-
-# class ReadOnly(BasePermission):
-#     def has_permission(self, request, view):
-#         return request.method in SAFE_METHODS
-
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -29,11 +23,10 @@ class CourseViewSet(viewsets.ModelViewSet):
     #     """
     #     Instantiates and returns the list of permissions that this view requires.
     #     """
-    #
-    #     if User.role == "Super Admin":
-    #         permission_classes = [IsAdminUser]
+    #     if self.action == 'list':
+    #         permission_classes = [IsAuthenticated]
     #     else:
-    #         permission_classes = [ReadOnly]
+    #         permission_classes = [IsAuthenticated & CoursePermissionsMixin]
     #     return [permission() for permission in permission_classes]
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
