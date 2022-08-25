@@ -43,8 +43,8 @@ class Course(models.Model):
         (6, 6),
         (7, 7),
     )
-    days_of_week = MultiSelectField("Days of the week", choices=DAYS_OF_WEEK, default=start_day_of_week,
-                                    max_choices=7, max_length=63)
+    days_of_week = MultiSelectField("Days of the week", choices=DAYS_OF_WEEK, default=' ',
+                                    max_choices=7, max_length=63, blank=True)
 
     @property
     def all_course_days(self):
