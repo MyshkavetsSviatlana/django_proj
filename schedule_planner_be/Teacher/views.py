@@ -10,7 +10,7 @@ from .forms import TeacherForm
 from .permissions import TeacherPermissionsMixin
 
 
-class TeacherListView(LoginRequiredMixin, TeacherPermissionsMixin, ListView):
+class TeacherListView(LoginRequiredMixin, ListView):
     """Вывод списка учителей"""
     model = Teacher
     template_name = 'Teacher/teacher_list.html'
