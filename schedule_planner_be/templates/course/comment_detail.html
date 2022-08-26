@@ -1,13 +1,12 @@
-<head>
-    <meta charset="UTF-8">
-    <title>Django Schedule</title>
-</head>
-<body>
-    <h1> Details of comment </h1>
+{% extends 'layout/basic.html' %}
+
+{% block title %}Информация о комментарии :: Комментарии{% endblock %}
+
+{% block content %}
+    <h1> Детали комментария </h1>
     <div>
         <h2>course name: {{ comment.course }}, comment: {{ comment.body }}</h2>
     </div>
-    <p><a href="{% url 'comment_edit' comment.url %}">+ Edit Comment</a></p>
-    <p><a href="{% url 'comment_confirm_delete' comment.url %}">+ Delete Comment</a></p>
-</body>
-</html>
+    <p><a href="{% url 'comment_edit' comment.url %}">Править комментарий</a></p>
+    <p><a href="{% url 'comment_confirm_delete' comment.url %}">Удалить комментарий</a></p>
+{% endblock %}
