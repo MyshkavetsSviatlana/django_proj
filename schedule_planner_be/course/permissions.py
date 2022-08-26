@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import AccessMixin
 from django.http import Http404
 
 
-class TeacherPermissionsMixin(AccessMixin):
+class CoursePermissionsMixin(AccessMixin):
     def has_permissions(self):
         return self.request.user.role == 'Super Admin'
 

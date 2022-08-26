@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'api',
     'rest_framework_swagger',
     'multiselectfield',
-    'django_filters'
+    'django_filters',
 ]
 
 MIDDLEWARE = [

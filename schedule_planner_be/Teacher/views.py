@@ -6,13 +6,13 @@ from .forms import TeacherForm
 from .permissions import TeacherPermissionsMixin
 
 
-class TeacherListView(LoginRequiredMixin, TeacherPermissionsMixin, ListView):
+class TeacherListView(LoginRequiredMixin, ListView):
     """Вывод списка учителей"""
     model = Teacher
     template_name = 'Teacher/teacher_list.html'
 
 
-class TeacherDetailView(LoginRequiredMixin, DetailView):
+class TeacherDetailView(LoginRequiredMixin, TeacherPermissionsMixin, DetailView):
     """Вывод полного описания учителей"""
     model = Teacher
     template_name = 'Teacher/teacher_detail.html'
