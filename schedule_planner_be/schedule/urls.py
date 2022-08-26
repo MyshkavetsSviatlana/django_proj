@@ -24,3 +24,11 @@ urlpatterns += [
     path('delete-subway/<int:pk>/delete', views.SubwayStationDeleteView.as_view(), name='delete-subway'),
     path('edit-subway/<int:pk>/update', views.SubwayStationUpdateView.as_view(), name='edit-subway'),
 ]
+
+urlpatterns += [
+    path('classrooms/', views.ClassroomListView.as_view(), name='classrooms'),
+    path('classroom/<int:pk>/detail', views.ClassroomDetailView.as_view(), name='classroom-detail'),
+    path('add-classroom/', views.ClassroomCreateView.as_view(), name='add-classroom'),
+    path('delete-classroom/<int:pk>/delete', views.ClassroomDeleteView.as_view(), name='delete-classroom'),
+    path('edit-classroom/<int:pk>/update', views.ClassroomUpdateView.as_view(), name='edit-classroom'),
+]

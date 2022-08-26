@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, DeleteView, UpdateView
-from .forms import ScheduleForm, LocationForm, SubwayStationForm
-from .models import Location, SubwayStation, Schedule
+from .forms import ScheduleForm, LocationForm, SubwayStationForm, ClassroomForm
+from .models import Location, SubwayStation, Schedule, Classroom
 from course.models import Course, Comment
 
 
@@ -114,3 +114,36 @@ class SubwayStationCreateView(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('subway-detail', args=(self.object.id,))
+
+
+class ClassroomListView(ListView):
+    template_name = 'schedule/classrooms.html'
+    model = Classroom
+
+
+class ClassroomUpdateView(UpdateView):
+    template_name = 'schedule/edit-classroom.html'
+    model = Classroom
+    form_class = ClassroomForm
+
+    def get_success_url(self):
+        return reverse_lazy('classroom-detail', args=(self.object.id,))
+
+
+class ClassroomDeleteView(DeleteView):
+    template_name = 'schedule/delete-classroom.html'
+    model = Classroom
+    success_url = reverse_lazy('classrooms')
+
+
+class ClassroomDetailView(DetailView):
+    template_name = 'schedule/classroom-detail.html'
+    model = Classroom
+
+
+class ClassroomCreateView(CreateView):
+    template_name = 'schedule/add-classroom.html'
+    form_class = ClassroomForm
+
+    def get_success_url(self):
+        return reverse_lazy('classroom-detail', args=(self.object.id,))
