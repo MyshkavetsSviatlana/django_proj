@@ -10,6 +10,11 @@ from .permissions import CoursePermissionsMixin
 from .service import CourseFilter
 
 
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
+
+
 class CourseViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,

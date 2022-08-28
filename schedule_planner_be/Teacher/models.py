@@ -111,6 +111,7 @@ class Teacher(models.Model):
                                     max_length=60, default=None)
     phone = models.CharField(_('Phone'), max_length=25, blank=True)
     image = models.ImageField(_("Photo"), upload_to="Teachers/", blank=True)
+    is_active = models.BooleanField(_('Status'), default=True)
     url = models.SlugField(max_length=160, unique=True, default=None)
 
     def __str__(self):

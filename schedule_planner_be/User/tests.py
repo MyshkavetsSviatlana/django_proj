@@ -64,7 +64,7 @@ class SignupPageTests(TestCase):
             'role': 'Super Admin'
         })
         self.assertEqual(User.objects.count(), 1)
-        self.assertRedirects(response, "/")
+        self.assertRedirects(response, "/user/confirm_email/")
 
 
 class LoginPageTests(TestCase):

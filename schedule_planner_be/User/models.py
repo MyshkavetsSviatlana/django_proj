@@ -14,7 +14,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             message=_('Write correct email address'),
             code=_('invalid_email')
         ),
-    ])
+    ], error_messages={
+            "unique": _("An account with this email already exists, sign in with this email address")})
     ROLE_CHOICES = [
         ('Super Admin', 'Super Admin'),
         ('Administrator', 'Administrator'),
@@ -27,6 +28,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     image = models.ImageField(_('Photo'), upload_to='Users/', blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    email_verify = models.BooleanField(default=False)
+    last_send_mail= models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

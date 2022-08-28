@@ -8,8 +8,8 @@
     <h1> List of Teachers </h1>
     <a href="{% url 'teacher_form' %}"> Create new Teacher </a>
     <div>
-        {% for Teacher in object_list %}
-        <h2>{{ Teacher.surname }} {{ Teacher.name }}</h2>
+        {% for teacher in object_list %}
+        <a href="{% url 'teacher_detail' teacher.url %}"><h2>{{ teacher.surname }} {{ teacher.name }}</h2></a>
         {% endfor %}
     </div>
 </body>

@@ -16,5 +16,12 @@ urlpatterns = [
     path('<int:pk>/', CommentUpdateView.as_view(), name='comment_edit'),
     path('comment/new/', CommentCreateView.as_view(), name='comment_form'),
     path('comment/<slug:slug>/delete', CommentDeleteView.as_view(), name='comment_confirm_delete'),
+    path('lesson/morning', LessonMorningListView.as_view(), name='lesson_list'),
+    path('lesson/evening', LessonEveningListView.as_view(), name='lesson_list'),
+    path('lesson/', LessonListView.as_view(), name='lesson_list'),
+    path('lesson/<int:pk>/', LessonDetailView.as_view(), name='lesson_detail'),
+    path('lesson/<int:pk>/edit/', LessonUpdateView.as_view(), name='lesson_edit'),
+    path('lesson/new/', LessonCreateView.as_view(), name='lesson_form'),
+    path('lesson/<int:pk>/delete/', LessonDeleteView.as_view(), name='lesson_confirm_delete'),
 ]
 
