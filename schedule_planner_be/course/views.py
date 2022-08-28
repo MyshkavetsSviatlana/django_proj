@@ -4,6 +4,8 @@ from .forms import CourseForm
 from .models import Course, Comment
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+import csv
+from django.http import HttpResponse
 
 from .permissions import CoursePermissionsMixin
 
@@ -22,7 +24,7 @@ class CourseDetailView(LoginRequiredMixin, CoursePermissionsMixin, DetailView):
 
 
 class CourseCreateView(LoginRequiredMixin, CoursePermissionsMixin, CreateView):
-# class CourseCreateView(GroupRequiredMixin, CreateView):
+    # class CourseCreateView(GroupRequiredMixin, CreateView):
     """Создание нового курса"""
     group_required = u"Super Admin"
     model = Course
@@ -86,3 +88,21 @@ class CommentDetailView(DetailView):
     model = Course
     template_name = 'course/comment_detail.html'
     slug_field = 'url'
+
+
+def csv_courses_list_write(request):
+    """""Create a CSV file with teachers list"""
+    # Get all data from Teacher Database Table
+    courses = Course.objects.all()
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="courses_list.csv"'
+    response.write(u'\ufeff'.encode('utf8'))
+    writer = csv.writer(response, delimiter=';', dialect='excel')
+    writer.writerow(['id', 'Название курса', 'Преподаватель', 'Дата начала курса', 'Кол-во занятий'])
+
+    for course in courses:
+        writer.writerow([course.id, course.course_name, course.teacher, course.start_date, course.number_of_lessons])
+
+    return response
