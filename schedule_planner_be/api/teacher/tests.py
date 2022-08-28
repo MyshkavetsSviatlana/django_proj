@@ -24,6 +24,7 @@ class TestTeacher(APITestCase):
             course_name='Python',
             url='1',
         )
+        self.teacher.save()
 
     def test_list_teacher(self):
         request = self.factory.get('/api/v1/teachers/')
@@ -41,7 +42,6 @@ class TestTeacher(APITestCase):
 
     def test_create_teacher(self):
         request = self.factory.post('/api/v1/teachers/new/', {
-            "pk": 2,
             "surname": 'Тестовое',
             "name": 'Создание',
             "specialization": 'Питон',
@@ -55,21 +55,23 @@ class TestTeacher(APITestCase):
         self.assertEqual(Teacher.objects.count(), 2)
 
     def test_teacher_update_view(self):
-        request = self.factory.put('/api/v1/teachers/edit/', {
+        request = self.factory.put('/api/v1/teachers/edit/', data={
             "surname": 'Тестовое',
             "name": 'Изменение',
             "specialization": 'Сайт',
+            "course_name": ['Тестирование ПО']
         })
         request.user = self.user
-        response = views.TeacherUpdateView.as_view()(request, pk=2)
+        response = views.TeacherUpdateView.as_view()(request, pk=1)
         self.assertEqual(response.status_code, 200)
         self.teacher.refresh_from_db()
         self.assertEqual(self.teacher.specialization, 'Сайт')
         self.assertEqual(self.teacher.surname, 'Тестовое')
-    #
-    # # def test_teacher_delete_view(self):
-    #     self.client.login(email='test@email.com', password='Password1234')
-    #     response = self.client.get(
-    #         reverse('teacher_confirm_delete', args='1'))
-    #     self.assertContains(response, 'Are you sure you want to delete')
-    #     self.assertEqual(Teacher.objects.count(), 1)
+
+    def test_teacher_delete_view(self):
+        request = self.factory.delete('/api/v1/teachers/delete/')
+        request.user = self.user
+        response = views.TeacherDeleteView.as_view()(request, pk=1)
+        response.render()
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Teacher.objects.count(), 1)

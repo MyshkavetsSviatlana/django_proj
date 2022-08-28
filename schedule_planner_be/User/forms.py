@@ -1,9 +1,34 @@
 from django import forms
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth import authenticate
+from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from .models import User
+from .service import send
+
+
+class UserAuthenticationForm(AuthenticationForm):
+    def clean(self):
+        email = self.cleaned_data.get("email")
+        password = self.cleaned_data.get("password")
+
+        if email is not None and password:
+            self.user_cache = authenticate(
+                self.request, username=email, password=password
+            )
+            if not self.user_cache.email_verify:
+                send(self.request, self.user_cache)
+                raise ValidationError(
+                    'Email not verify, check you email',
+                    code='invalid login'
+                )
+            if self.user_cache is None:
+                raise self.get_invalid_login_error()
+            else:
+                self.confirm_login_allowed(self.user_cache)
+
+        return self.cleaned_data
 
 
 class UserCreationForm(forms.ModelForm):

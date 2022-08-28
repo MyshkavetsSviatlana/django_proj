@@ -5,8 +5,6 @@ from rest_framework import permissions, viewsets, renderers, generics
 from User.models import User
 from api.course.serializers import CourseSerializer
 from course.models import Course
-from django_filters.rest_framework import DjangoFilterBackend
-from .service import CourseFilter
 
 
 class ReadOnly(BasePermission):
@@ -38,27 +36,3 @@ class CourseViewSet(viewsets.ModelViewSet):
     def highlight(self, request, *args, **kwargs):
         course = self.get_object()
         return Response(course.highlighted)
-
-
-class CourseMorningListView(generics.ListAPIView):
-    """Вывод утреннего расписания"""
-    serializer_class = CourseSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = (DjangoFilterBackend, )
-    filterset_class = CourseFilter
-
-    def get_queryset(self):
-        courses = Course.objects.all().filter(course_type__contains='Morning schedule')
-        return courses
-
-
-class CourseEveningListView(generics.ListAPIView):
-    """Вывод утреннего расписания"""
-    serializer_class = CourseSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = (DjangoFilterBackend, )
-    filterset_class = CourseFilter
-
-    def get_queryset(self):
-        courses = Course.objects.all().filter(course_type__contains='Evening schedule')
-        return courses

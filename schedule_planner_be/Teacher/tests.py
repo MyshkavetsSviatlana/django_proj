@@ -79,4 +79,3 @@ class TeacherTests(TestCase):
         response = self.client.get(
             reverse('teacher_confirm_delete', args='1'))
         self.assertContains(response, 'Are you sure you want to delete')
-        self.assertEqual(Teacher.objects.count(), 1)

@@ -1,3 +1,4 @@
+import datetime
 import itertools
 from django.urls import reverse
 from datetime import timedelta
@@ -208,3 +209,35 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.body}'
+
+
+class Lesson(models.Model):
+    """Создание модели занятия"""
+    START_TIME_OPTIONS = [
+        ("09:00", "09:00"),
+        ("10:00", "10:00"),
+        ("11:00", "11:00"),
+        ("12:00", "12:00"),
+        ("13:00", "13:00"),
+        ("14:00", "14:00"),
+        ("15:00", "15:00"),
+        ("16:00", "16:00"),
+        ("17:00", "17:00"),
+        ("18:00", "18:00"),
+        ("19:00", "19:00"),
+    ]
+    number = models.PositiveSmallIntegerField("Number")
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING)
+    teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING)
+    topic = models.CharField(max_length=100)
+    description = models.TextField("Description")
+    date = models.DateField("Date", default=date.today)
+    start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, max_length=9)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Занятие"
+        verbose_name_plural = "Занятия"
+
+    def __str__(self):
+        return f"{self.number} {self.course} {self.topic}"
