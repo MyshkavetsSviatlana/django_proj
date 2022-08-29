@@ -1,11 +1,11 @@
 from django.forms import ModelForm
-from .models import Course
+from .models import Course, Lesson
 
 
 class CourseForm(ModelForm):
     class Meta:
         model = Course
-from .models import Lesson
+        fields = '__all__'
 
 
 class LessonForm(ModelForm):

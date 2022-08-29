@@ -1,3 +1,6 @@
+import csv
+
+from django.http import HttpResponse
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -7,12 +10,6 @@ from course.models import Course
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .permissions import CoursePermissionsMixin
-from .service import CourseFilter
-
-
-class ReadOnly(BasePermission):
-    def has_permission(self, request, view):
-        return request.method in SAFE_METHODS
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -40,25 +37,20 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Response(course.highlighted)
 
 
-class CourseMorningListView(generics.ListAPIView):
-    """Вывод утреннего расписания"""
-    serializer_class = CourseSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = (DjangoFilterBackend, )
-    filterset_class = CourseFilter
+def csv_courses_list_write(request):
+    """""Create a CSV file with teachers list"""
+    # Get all data from Teacher Database Table
+    courses = Course.objects.all()
 
-    def get_queryset(self):
-        courses = Course.objects.all().filter(course_type__contains='Morning schedule')
-        return courses
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="courses_list.csv"'
+    response.write(u'\ufeff'.encode('utf8'))
+    writer = csv.writer(response, delimiter=';', dialect='excel')
+    writer.writerow(['id', 'Название курса', 'Преподаватель', 'Дата старта', 'Время начала', 'Кол-во уроков'])
 
+    for course in courses:
+        writer.writerow([course.id, course.course_name, course.teacher, course.start_date, course. start_time,
+                         course.number_of_lessons])
 
-class CourseEveningListView(generics.ListAPIView):
-    """Вывод утреннего расписания"""
-    serializer_class = CourseSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = (DjangoFilterBackend, )
-    filterset_class = CourseFilter
-
-    def get_queryset(self):
-        courses = Course.objects.all().filter(course_type__contains='Evening schedule')
-        return courses
+    return response

@@ -23,5 +23,6 @@ urlpatterns = [
     path('lesson/<int:pk>/edit/', LessonUpdateView.as_view(), name='lesson_edit'),
     path('lesson/new/', LessonCreateView.as_view(), name='lesson_form'),
     path('lesson/<int:pk>/delete/', LessonDeleteView.as_view(), name='lesson_confirm_delete'),
+    path('lesson/export/lessons-list/', views.csv_lessons_list_write, name='csv_lessons_list_write'),
 ]
 

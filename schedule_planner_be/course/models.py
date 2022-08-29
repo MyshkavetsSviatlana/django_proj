@@ -240,4 +240,4 @@ class Lesson(models.Model):
         verbose_name_plural = "Занятия"
 
     def __str__(self):
-        return f"{self.number} {self.course} {self.topic}"
+        return f"{self.number} {self.course} {self.topic} {self.date} {self.start_time}"

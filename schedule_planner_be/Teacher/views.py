@@ -79,8 +79,6 @@ class TeacherDeleteView(LoginRequiredMixin, TeacherPermissionsMixin, DeleteView)
         return HttpResponseRedirect(self.get_success_url())
 
 
-
-
 def csv_teachers_list_write(request):
     """""Create a CSV file with teachers list"""
     # Get all data from Teacher Database Table

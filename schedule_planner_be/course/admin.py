@@ -13,7 +13,8 @@ class CourseAdmin(admin.ModelAdmin):
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    ordering = ["-id"]
+    list_display = ["number", "course", "date", "start_time", "topic", "description"]
+    ordering = ["number"]
     search_fields = ["topic"]
     list_filter = ["course__course_name", "teacher", "date", "start_time"]
 
