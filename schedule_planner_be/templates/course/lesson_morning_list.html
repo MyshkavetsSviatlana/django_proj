@@ -17,5 +17,41 @@
         </a>
         {% endfor %}
     </div>
+<form action="{% url 'morning_filter' %}" method="get">
+    <div class="left-side my-4">
+        <h3 class="sear-head editContent">Course</h3>
+        <ul class="w3layouts-box-list">
+            {% for course in view.get_morning_course %}
+            <li class="editContent">
+                <input type="checkbox" class="checked" name="course_name" value="{{ course.course_name }}">
+                <span class="span editContent">{{ course.course_name }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="left-side my-4">
+    <h3 class="sear-head editContent">Location</h3>
+    <ul class="w3layouts-box-list">
+        {% for course in view.get_morning_location %}
+        <li class="editContent">
+            <input type="checkbox" class="checked" name="location" value="{{ course.location__location__street }}">
+                <span class="span editContent">{{ course.location__location__street }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+    </div>
+    <div class="left-side my-4">
+        <h3 class="sear-head editContent">Teacher</h3>
+        <ul class="w3layouts-box-list">
+            {% for teacher in view.get_teacher %}
+            <li class="editContent">
+                <input type="checkbox" class="checked" name="surname" value="{{ teacher.surname }}">
+                <span class="span editContent">{{ teacher.surname }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <button type="submit"> Find </button>
+    </form>
 </body>
 </html>

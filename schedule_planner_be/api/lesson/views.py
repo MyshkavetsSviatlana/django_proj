@@ -4,14 +4,16 @@ from .serializers import *
 from course.models import Lesson
 from .permissions import LessonPermissionsMixin
 from rest_framework.permissions import IsAuthenticated
-from .service import LessonFilter
+from .service import LessonFilter, LessonTeacherFilter
 
 
 class LessonListView(generics.ListAPIView):
     """Вывод списка занятий"""
     serializer_class = LessonListSerializer
-    queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated]
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = LessonTeacherFilter
+    queryset = Lesson.objects.all()
 
 
 class LessonMorningListView(generics.ListAPIView):

@@ -13,23 +13,24 @@ from .service import send
 User = get_user_model()
 
 
-class SendRepeadMessage(View):
-    def post(self, request):
-        email = request.data.get('email')
-        try:
-         user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            raise ValueError('No user with such email')
-        last_mail = user.last_send_mail
-        delta = datetime.datetime.now() - datetime.timedelta(seconds=60)
-        if delta > last_mail:
-            return send(request, user)
-        else:
-            raise ValueError('Wait for 60 seconds to pass')
+# class SendRepeadMessage(View):
+#     def post(self, request):
+#         email = request.data.get('email')
+#         try:
+#          user = User.objects.get(email=email)
+#         except User.DoesNotExist:
+#             raise ValueError('No user with such email')
+#         last_mail = user.last_send_mail
+#         delta = datetime.datetime.now() - datetime.timedelta(seconds=60)
+#         if delta > last_mail:
+#             return send(request, user)
+#         else:
+#             raise ValueError('Wait for 60 seconds to pass')
 
 
 class MyLoginView(LoginView):
     form_class = UserAuthenticationForm
+    template_name = 'registration/login.html'
 
 
 class EmailVerify(View):

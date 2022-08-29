@@ -16,7 +16,7 @@ class Course(models.Model):
     """Creates model Course"""
     # prepopulated_fields = {"course_type": ("start_time", )}
     course_name = models.CharField("Course name", max_length=50)
-    teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING, null=True, blank=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
     start_date = models.DateField("Course start date", default=date.today)
     start_day_of_week = models.CharField("Start day of week", max_length=200, default=" ", blank=True,
                                          help_text="The column will be filled in automatically after saving")
@@ -195,22 +195,6 @@ class Course(models.Model):
         unique_together = ('start_date', 'days_of_week', 'location', 'start_time')
 
 
-class Comment(models.Model):
-    """Creates model Comment"""
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default='')
-    body = models.CharField(max_length=50)
-    created = models.DateTimeField(auto_now_add=True)
-    active = models.BooleanField(default=True)
-
-    class Meta:
-        verbose_name = "Комментарий"
-        verbose_name_plural = "Комментарии"
-
-    def __str__(self):
-        return f'{self.body}'
-
-
 class Lesson(models.Model):
     """Создание модели занятия"""
     START_TIME_OPTIONS = [
@@ -227,13 +211,12 @@ class Lesson(models.Model):
         ("19:00", "19:00"),
     ]
     number = models.PositiveSmallIntegerField("Number")
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING)
-    teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, verbose_name="Преподаватель", on_delete=models.SET_NULL, null=True)
     topic = models.CharField(max_length=100)
     description = models.TextField("Description")
     date = models.DateField("Date", default=date.today)
     start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, max_length=9)
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         verbose_name = "Занятие"
@@ -241,3 +224,19 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.number} {self.course} {self.topic}"
+
+
+class Comment(models.Model):
+    """Creates model Comment"""
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default='')
+    body = models.CharField(max_length=50)
+    created = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Комментарий"
+        verbose_name_plural = "Комментарии"
+
+    def __str__(self):
+        return f'{self.body}'
