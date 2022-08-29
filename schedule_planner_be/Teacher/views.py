@@ -1,4 +1,8 @@
+import csv
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -75,3 +79,19 @@ class TeacherDeleteView(LoginRequiredMixin, TeacherPermissionsMixin, DeleteView)
         return HttpResponseRedirect(self.get_success_url())
 
 
+def csv_teachers_list_write(request):
+    """""Create a CSV file with teachers list"""
+    # Get all data from Teacher Database Table
+    teachers = Teacher.objects.all()
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="teachers_list.csv"'
+    response.write(u'\ufeff'.encode('utf8'))
+    writer = csv.writer(response, delimiter=';', dialect='excel')
+    writer.writerow(['id', 'Фамилия', 'Имя', 'Специализация', 'Телефон'])
+
+    for teacher in teachers:
+        writer.writerow([teacher.id, teacher.surname, teacher.name, teacher.specialization, teacher.phone])
+
+    return response

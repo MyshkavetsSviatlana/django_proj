@@ -5,7 +5,7 @@ from datetime import timedelta
 from audioop import reverse
 from django.db import models
 from django.utils.datetime_safe import date
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator
 from multiselectfield import MultiSelectField
 
 from Teacher.models import Teacher
@@ -18,7 +18,7 @@ class Course(models.Model):
     course_name = models.CharField("Course name", max_length=50)
     teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING, null=True, blank=True)
     start_date = models.DateField("Course start date", default=date.today)
-    start_day_of_week = models.CharField("Start day of week", max_length=200, default=" ", blank=True,
+    start_day_of_week = models.CharField("Start day of week", max_length=200, default="", blank=True,
                                          help_text="The column will be filled in automatically after saving")
 
     @property
@@ -44,7 +44,7 @@ class Course(models.Model):
         (6, 6),
         (7, 7),
     )
-    days_of_week = MultiSelectField("Days of the week", choices=DAYS_OF_WEEK, default=' ',
+    days_of_week = MultiSelectField("Days of the week", choices=DAYS_OF_WEEK, default="",
                                     max_choices=7, max_length=63, blank=True)
 
     @property
@@ -154,7 +154,7 @@ class Course(models.Model):
         start_time_options = [i for i in all_start_time_options]
         return start_time_options
 
-    choices = models.CharField("Start time options", max_length=200, default=" ", blank=True)
+    choices = models.CharField("Start time options", max_length=200, default="", blank=True)
     start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, max_length=9)
     number_of_lessons = models.PositiveSmallIntegerField("Number of lessons", validators=[MaxValueValidator(50)])
 
@@ -168,10 +168,10 @@ class Course(models.Model):
         if self.start_time in evening_course:
             return "Evening schedule"
 
-    course_type = models.CharField("Course type", max_length=16, blank=True, default=" ",
+    course_type = models.CharField("Course type", max_length=16, blank=True, default="",
                                    help_text="The column will be filled in automatically after saving")
 
-    all_course_dates = models.CharField("All course days", max_length=200, blank=True, default=" ",
+    all_course_dates = models.CharField("All course days", max_length=200, blank=True, default="",
                                         help_text="The column will be filled in automatically after saving")
 
     def save(self, *args, **kwargs):
@@ -240,4 +240,4 @@ class Lesson(models.Model):
         verbose_name_plural = "Занятия"
 
     def __str__(self):
-        return f"{self.number} {self.course} {self.topic}"
+        return f"{self.number} {self.course} {self.topic} {self.date} {self.start_time}"

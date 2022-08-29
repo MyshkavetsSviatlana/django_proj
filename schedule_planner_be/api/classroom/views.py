@@ -1,17 +1,11 @@
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser, BasePermission, \
-    SAFE_METHODS
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import viewsets, renderers
 
-from User.models import User
+from api.classroom.permissions import ClassroomPermissionsMixin
 from api.classroom.serializers import ClassroomSerializer
 from schedule.models import Classroom
-
-
-class ReadOnly(BasePermission):
-    def has_permission(self, request, view):
-        return request.method in SAFE_METHODS
 
 
 class ClassroomViewSet(viewsets.ModelViewSet):
@@ -28,11 +22,10 @@ class ClassroomViewSet(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-
-        if User.role == 'SuperAdmin':
-            permission_classes = [IsAdminUser]
+        if self.action == 'list':
+            permission_classes = [IsAuthenticated]
         else:
-            permission_classes = [ReadOnly]
+            permission_classes = [IsAuthenticated & ClassroomPermissionsMixin]
         return [permission() for permission in permission_classes]
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])

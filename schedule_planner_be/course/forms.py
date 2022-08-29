@@ -1,5 +1,11 @@
 from django.forms import ModelForm
-from .models import Lesson
+from .models import Course, Lesson
+
+
+class CourseForm(ModelForm):
+    class Meta:
+        model = Course
+        fields = '__all__'
 
 
 class LessonForm(ModelForm):
