@@ -1,12 +1,11 @@
 from rest_framework import viewsets, permissions
-from api.location.serializers import LocationSerializer
-from schedule.models import Location
-from User.models import User
+from api.comment.serializers import CommentSerializer
+from schedule.models import Comment
 
 
-class LocationViewSet(viewsets.ModelViewSet):
-    queryset = Location.objects.all()
-    serializer_class = LocationSerializer
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
     permission_class = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):

@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Django Schedule</title>
-</head>
-<body>
-    <h1> Details of Teacher </h1>
+{% extends 'layout/basic.html' %}
+
+{% block title %}Информация о преподавателе :: Преподаватель{% endblock %}
+
+{% block content %}
+    <h1> Информация по учителю </h1>
     <div>
         <h2>{{ teacher.surname }} {{ teacher.name }} {{ teacher.fathers_name }}</h2>
         <p>{{ teacher.age }}</p>
@@ -13,7 +11,6 @@
         <p>{{ teacher.group_count }}</p>
         <p>{{ teacher.specialization}}</p>
     </div>
-    <p><a href="{% url 'teacher_edit' teacher.url %}">+ Edit Teacher</a></p>
-    <p><a href="{% url 'teacher_confirm_delete' teacher.url %}">+ Delete Teacher</a></p>
-</body>
-</html>
+    <p><a href="{% url 'teacher_edit' teacher.url %}">Создать профиль преподавателя</a></p>
+    <p><a href="{% url 'teacher_confirm_delete' teacher.url %}">Удалить преподавателя</a></p>
+{% endblock %}

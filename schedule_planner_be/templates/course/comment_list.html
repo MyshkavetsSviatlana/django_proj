@@ -1,3 +1,26 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %}Комментарии{% endblock %}
+
+{% block content %}
+
+<h1>Комментарии</h1>
+<a href="{% url 'comment_form' %}"> Создать комментарий </a>
+{% if comment_list %}
+    {% for comment in comment_list %}
+    <div>
+        <p>{{comment.id}} - course: {{comment.course}} <a href="{% url 'comment_detail' comment.id %}">{{comment.body}}</a></p>
+        <p>{{ course.start_day }}</p>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>Комментарии пока отсутствуют.</p>
+{% endif %}
+{% endblock %}
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +32,7 @@
     <a href="{% url 'comment_form' %}"> Create new comment </a>
     <div>
         {% for comment in object_list %}
-        <h2>{{comment.id}} - course: {{comment.course}} <a href="{% url "comment_detail" comment.id %}">{{comment.body}}</a> </h2>
+        <h2> </h2>
         {% endfor %}
     </div>
 </body>
