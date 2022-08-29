@@ -10,12 +10,12 @@ from .service import send
 
 class UserAuthenticationForm(AuthenticationForm):
     def clean(self):
-        email = self.cleaned_data.get("email")
+        username = self.cleaned_data.get("username")
         password = self.cleaned_data.get("password")
 
-        if email is not None and password:
+        if username is not None and password:
             self.user_cache = authenticate(
-                self.request, username=email, password=password
+                self.request, username=username, password=password
             )
             if not self.user_cache.email_verify:
                 send(self.request, self.user_cache)
