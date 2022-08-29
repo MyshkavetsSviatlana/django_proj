@@ -12,11 +12,17 @@ class LocationViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         user_role = self.request.user.role
         if user_role == 'Super Admin':
-            ...
+            return True
         raise PermissionError('User has not permission')
 
     def update(self, request, *args, **kwargs):
-        ...
+        user_role = self.request.user.role
+        if user_role == 'Super Admin':
+            return True
+        raise PermissionError('User has not permission')
 
     def destroy(self, request, *args, **kwargs):
-        ...
+        user_role = self.request.user.role
+        if user_role == 'Super Admin':
+            return True
+        raise PermissionError('User has not permission')
