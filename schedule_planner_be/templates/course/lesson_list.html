@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Schedule</title>
+</head>
+<body>
+    <h1> List of lessons </h1>
+    <a href="{% url 'lesson_form' %}"> Create new lesson </a>
+    <div>
+        {% for lesson in object_list %}
+        <a href="{% url 'lesson_detail' lesson.pk %}">
+            <h2>{{ lesson.topic }}
+                {{ lesson.date }}
+                {{ lesson.start_time }}
+            </h2>
+        </a>
+        {% endfor %}
+    </div>
+</body>
+</html>

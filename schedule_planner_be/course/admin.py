@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Comment
+from .models import Course, Comment, Lesson
 
 
 @admin.register(Course)
@@ -9,6 +9,13 @@ class CourseAdmin(admin.ModelAdmin):
     ordering = ["-id"]
     search_fields = ["course_name"]
     list_filter = ["course_type", "teacher"]
+
+
+@admin.register(Lesson)
+class LessonAdmin(admin.ModelAdmin):
+    ordering = ["-id"]
+    search_fields = ["topic"]
+    list_filter = ["course__course_name", "teacher", "date", "start_time"]
 
 
 # admin.site.register(Course, CourseAdmin)
