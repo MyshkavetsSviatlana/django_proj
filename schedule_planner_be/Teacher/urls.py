@@ -1,4 +1,6 @@
 from django.urls import path
+
+from . import views
 from .views import TeacherListView, TeacherDetailView, TeacherCreateView, TeacherUpdateView, TeacherDeleteView
 from django.contrib import admin
 from .views import *
@@ -9,4 +11,5 @@ urlpatterns = [
     path('<slug:slug>/edit', TeacherUpdateView.as_view(), name='teacher_edit'),
     path('new/', TeacherCreateView.as_view(), name='teacher_form'),
     path('<slug:slug>/', TeacherDetailView.as_view(), name='teacher_detail'),
+    path('export/teachers-list/', views.csv_teachers_list_write, name='csv_teachers_list_write'),
 ]

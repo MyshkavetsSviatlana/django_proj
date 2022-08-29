@@ -8,6 +8,7 @@ urlpatterns = [
     path('locations/', include('api.location.urls')),
     path('classrooms/', include('api.classroom.urls')),
     path('subwaystations/', include('api.subwaystation.urls')),
-    path('comments/', include('api.comment.urls')),
+    # path('comments/', include('api.comment.urls')),
+    # path('comments/', include('api.comment.urls')),
     path('lessons/', include('api.lesson.urls'))
 ]

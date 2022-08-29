@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
+
 from course.models import Course
 
 
@@ -17,6 +19,10 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
+        validators = [UniqueTogetherValidator(
+            queryset=Course.objects.all(),
+            fields=['start_date', 'start_time', 'location']
+        )]
 
     def create(self, validated_data):
         return Course.objects.create(**validated_data)

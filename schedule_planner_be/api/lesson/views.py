@@ -1,3 +1,6 @@
+import csv
+
+from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions
 from .serializers import *
@@ -66,3 +69,23 @@ class LessonDeleteView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonDetailSerializer
     permission_classes = [IsAuthenticated & LessonPermissionsMixin]
+
+
+def csv_lessons_list_write(request):
+    """""Create a CSV file with teachers list"""
+    # Get all data from Teacher Database Table
+    lessons = Lesson.objects.all()
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="lessons_list.csv"'
+    response.write(u'\ufeff'.encode('utf8'))
+    writer = csv.writer(response, delimiter=';', dialect='excel')
+    writer.writerow(['Номер занятия в курсе', 'Название курса', 'Преподаватель', 'Тема занятия', 'Краткое описание',
+                     'Дата занятия', 'Время занятия', 'Комментарий'])
+
+    for lesson in lessons:
+        writer.writerow([lesson.number, lesson.course, lesson.teacher, lesson.topic, lesson.description,
+                         lesson.date, lesson.start_time, lesson.comment])
+
+    return response

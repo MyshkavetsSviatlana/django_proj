@@ -1,4 +1,7 @@
+import csv
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import render
 from .models import Course, Comment, Lesson
 from Teacher.models import Teacher
@@ -141,3 +144,42 @@ class LessonDeleteView(LoginRequiredMixin, LessonPermissionsMixin, DeleteView):
     template_name = 'course/lesson_confirm_delete.html'
     fields = '__all__'
     success_url = "/courses/lesson/"
+
+
+def csv_courses_list_write(request):
+    """""Create a CSV file with teachers list"""
+    # Get all data from Teacher Database Table
+    courses = Course.objects.all()
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="courses_list.csv"'
+    response.write(u'\ufeff'.encode('utf8'))
+    writer = csv.writer(response, delimiter=';', dialect='excel')
+    writer.writerow(['id', 'Название курса', 'Преподаватель', 'Дата старта', 'Время начала', 'Кол-во уроков'])
+
+    for course in courses:
+        writer.writerow([course.id, course.course_name, course.teacher, course.start_date, course. start_time,
+                         course.number_of_lessons])
+
+    return response
+
+
+def csv_lessons_list_write(request):
+    """""Create a CSV file with teachers list"""
+    # Get all data from Teacher Database Table
+    lessons = Lesson.objects.all()
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="lessons_list.csv"'
+    response.write(u'\ufeff'.encode('utf8'))
+    writer = csv.writer(response, delimiter=';', dialect='excel')
+    writer.writerow(['Номер занятия в курсе', 'Название курса', 'Преподаватель', 'Тема занятия', 'Краткое описание',
+                     'Дата занятия', 'Время занятия', 'Комментарий'])
+
+    for lesson in lessons:
+        writer.writerow([lesson.number, lesson.course, lesson.teacher, lesson.topic, lesson.description,
+                         lesson.date, lesson.start_time, lesson.comment])
+
+    return response

@@ -4,13 +4,9 @@ from rest_framework.response import Response
 from rest_framework import viewsets, renderers
 
 from User.models import User
+from api.subwaystation.permissions import SubwayStationPermissionsMixin
 from api.subwaystation.serializers import SubwayStationSerializer
 from schedule.models import SubwayStation
-
-
-class ReadOnly(BasePermission):
-    def has_permission(self, request, view):
-        return request.method in SAFE_METHODS
 
 
 class SubwayStationViewSet(viewsets.ModelViewSet):
@@ -27,10 +23,10 @@ class SubwayStationViewSet(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permission_classes = [IsAdminUser]
+        if self.action == 'list':
+            permission_classes = [IsAuthenticated]
         else:
-            permission_classes = [ReadOnly]
+            permission_classes = [IsAuthenticated & SubwayStationPermissionsMixin]
         return [permission() for permission in permission_classes]
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])

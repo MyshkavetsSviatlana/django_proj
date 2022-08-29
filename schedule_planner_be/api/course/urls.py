@@ -21,4 +21,5 @@ urlpatterns = [
     path('', course_list, name='course-list'),
     path('<int:pk>/', course_detail, name='course-detail'),
     path('<int:pk>/highlight/', course_highlight, name='course-highlight'),
+    path('export/courses-list/', views.csv_courses_list_write, name='csv_courses_list_write'),
 ]

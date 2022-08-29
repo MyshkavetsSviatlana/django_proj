@@ -9,4 +9,5 @@ urlpatterns =[
     path('delete/<int:pk>/', views.LessonDeleteView.as_view()),
     path('<int:pk>/', views.LessonDetailView.as_view()),
     path('new/', views.LessonCreateView.as_view()),
+    path('export/lessons-list/', views.csv_lessons_list_write, name='csv_lessons_list_write')
 ]
