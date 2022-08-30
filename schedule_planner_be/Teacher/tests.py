@@ -78,4 +78,4 @@ class TeacherTests(TestCase):
         self.client.login(email='test@email.com', password='Password1234')
         response = self.client.get(
             reverse('teacher_confirm_delete', args='1'))
-        self.assertContains(response, 'Are you sure you want to delete')
+        self.assertContains(response, 'Вы уверены, что хотите удалить профиль')

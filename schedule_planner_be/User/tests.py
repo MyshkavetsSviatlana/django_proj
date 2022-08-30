@@ -68,7 +68,7 @@ class SignupPageTests(TestCase):
 
 
 class LoginPageTests(TestCase):
-    """Тестирование регистрации"""
+    """Тестирование входа"""
     def setUp(self):
         url = '/user/login/'
         self.response = self.client.get(url)
