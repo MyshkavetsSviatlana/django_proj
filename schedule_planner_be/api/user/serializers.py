@@ -16,7 +16,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
     """Добавление пользователя"""
     password = serializers.CharField(label='Password', validators=[
         RegexValidator(
-            regex="^(?=.*[0-9].*)(?=.*[a-z].*)(?=.*[A-Z].*)[0-9a-zA-Z]{8,}$",
+            regex="^(?=.*[0-9].*)(?=.*[a-z].*)(?=.*[A-Z].*)[0-9a-zA-Z]{8}$",
             message=_('Write correct password'),
             code=_('invalid_password')
         )], help_text=_('Password should have at least one digit, one upper case letter and one lower case letter'),
