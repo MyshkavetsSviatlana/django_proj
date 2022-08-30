@@ -241,3 +241,5 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.number} {self.course} {self.topic} {self.date} {self.start_time}"
+
+
