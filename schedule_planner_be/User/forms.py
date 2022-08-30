@@ -35,22 +35,23 @@ class UserCreationForm(forms.ModelForm):
     """Форма для создания нового пользователя"""
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput, validators=[
         RegexValidator(
-            regex="^(?=.*[0-9].*)(?=.*[a-z].*)(?=.*[A-Z].*)[0-9a-zA-Z]{8,}$",
-            message=_('Write correct password'),
+            regex="^(?=.*[0-9].*)(?=.*[a-z].*)(?=.*[A-Z].*)[0-9a-zA-Z]{8}$",
+            message=_('Invalid password'),
             code=_('invalid_password')
-        )], help_text=_('Password should have at least one digit, one upper case letter and one lower case letter'))
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+        )], help_text=_('Password should have only 8 characters, '
+                        'at least one digit, one upper case letter and one lower case letter'))
+    password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'role', 'image')
+        fields = ('email', 'first_name', 'role')
 
     def clean_passwords(self):
         """Проверка на совпадение паролей"""
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
-            raise ValidationError("Passwords don't match")
+            raise ValidationError("Password does not match")
         return password2
 
     def save(self, commit=True):
