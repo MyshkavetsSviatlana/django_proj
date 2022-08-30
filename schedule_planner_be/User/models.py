@@ -27,7 +27,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             regex="^[А-Яа-я0-9]{,50}$",
             message=_('Invalid name'),
             code=_('invalid_name')
-        )], max_length=50, blank=True)
+        )], max_length=50)
     last_name = models.CharField(_('Surname'), max_length=100, blank=True)
     date_joined = models.DateTimeField(_('Date joined'), auto_now=True)
     image = models.ImageField(_('Photo'), upload_to='Users/', blank=True)
