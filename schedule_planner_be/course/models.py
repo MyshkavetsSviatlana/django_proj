@@ -1,11 +1,13 @@
-import datetime
 import itertools
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 from datetime import timedelta
 from audioop import reverse
 from django.db import models
 from django.utils.datetime_safe import date
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator
 from multiselectfield import MultiSelectField
 
 from Teacher.models import Teacher
@@ -18,7 +20,7 @@ class Course(models.Model):
     course_name = models.CharField("Course name", max_length=50)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
     start_date = models.DateField("Course start date", default=date.today)
-    start_day_of_week = models.CharField("Start day of week", max_length=200, default=" ", blank=True,
+    start_day_of_week = models.CharField("Start day of week", max_length=200, default="", blank=True,
                                          help_text="The column will be filled in automatically after saving")
 
     @property
@@ -44,7 +46,7 @@ class Course(models.Model):
         (6, 6),
         (7, 7),
     )
-    days_of_week = MultiSelectField("Days of the week", choices=DAYS_OF_WEEK, default=' ',
+    days_of_week = MultiSelectField("Days of the week", choices=DAYS_OF_WEEK, default="",
                                     max_choices=7, max_length=63, blank=True)
 
     @property
@@ -102,24 +104,6 @@ class Course(models.Model):
         all_course_days_str = [str(i) for i in all_course_days]
         return all_course_days_str
 
-    @property
-    def end_date(self):
-        """Returns course end date"""
-        end_date = self.all_course_days[-3]
-        return end_date
-
-    @property
-    def transit_date_1(self):
-        """Returns course transit day 1"""
-        transit_date_1 = self.all_course_days[-2]
-        return transit_date_1
-
-    @property
-    def transit_date_2(self):
-        """Returns course transit day 1"""
-        transit_date_2 = self.all_course_days[-1]
-        return transit_date_2
-
     location = models.ForeignKey("schedule.Classroom", on_delete=models.DO_NOTHING)
 
     # @property
@@ -154,7 +138,7 @@ class Course(models.Model):
         start_time_options = [i for i in all_start_time_options]
         return start_time_options
 
-    choices = models.CharField("Start time options", max_length=200, default=" ", blank=True)
+    choices = models.CharField("Start time options", max_length=200, default="", blank=True)
     start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, max_length=9)
     number_of_lessons = models.PositiveSmallIntegerField("Number of lessons", validators=[MaxValueValidator(50)])
 
@@ -168,10 +152,10 @@ class Course(models.Model):
         if self.start_time in evening_course:
             return "Evening schedule"
 
-    course_type = models.CharField("Course type", max_length=16, blank=True, default=" ",
+    course_type = models.CharField("Course type", max_length=16, blank=True, default="",
                                    help_text="The column will be filled in automatically after saving")
 
-    all_course_dates = models.CharField("All course days", max_length=200, blank=True, default=" ",
+    all_course_dates = models.CharField("All course days", max_length=200, blank=True, default="",
                                         help_text="The column will be filled in automatically after saving")
 
     def save(self, *args, **kwargs):
@@ -195,6 +179,35 @@ class Course(models.Model):
         unique_together = ('start_date', 'days_of_week', 'location', 'start_time')
 
 
+@receiver(post_save, sender=Course)
+def create_lessons(sender, instance, **kwargs):
+    course = instance
+    teacher = course.teacher
+    start_time = course.start_time
+    number = 1
+    for dates in course.all_course_dates:
+        index = course.all_course_dates.index(dates)
+        if number == len(course.all_course_dates) + 1:
+            break
+        else:
+            if index == 0:
+                Lesson.objects.create(number=number, course=course, teacher=teacher, date=dates,
+                                      start_time=start_time, is_start_day=True)
+            if index == len(course.all_course_dates) - 3:
+                Lesson.objects.create(number=number, course=course, teacher=teacher, date=dates,
+                                      start_time=start_time, is_end_day=True)
+            if index == len(course.all_course_dates) - 2:
+                Lesson.objects.create(number=number, course=course, teacher=teacher, date=dates,
+                                      start_time=start_time, is_transit_day_1=True)
+            if index == len(course.all_course_dates) - 1:
+                Lesson.objects.create(number=number, course=course, teacher=teacher, date=dates,
+                                      start_time=start_time, is_transit_day_2=True)
+            if dates in course.all_course_dates[1:len(course.all_course_dates)-3]:
+                Lesson.objects.create(number=number, course=course, teacher=teacher, date=dates,
+                                      start_time=start_time)
+            number += 1
+
+
 class Lesson(models.Model):
     """Создание модели занятия"""
     START_TIME_OPTIONS = [
@@ -212,15 +225,20 @@ class Lesson(models.Model):
     ]
     number = models.PositiveSmallIntegerField("Number")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    teacher = models.ForeignKey(Teacher, verbose_name="Преподаватель", on_delete=models.SET_NULL, null=True)
-    topic = models.CharField(max_length=100)
-    description = models.TextField("Description")
+    teacher = models.ForeignKey(Teacher, verbose_name="Преподаватель", on_delete=models.SET_NULL, null=True, blank=True)
+    topic = models.CharField(max_length=100, blank=True)
+    description = models.TextField("Description", blank=True)
     date = models.DateField("Date", default=date.today)
     start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, max_length=9)
+    is_start_day = models.BooleanField(default=False, blank=True)
+    is_end_day = models.BooleanField(default=False, blank=True)
+    is_transit_day_1 = models.BooleanField(default=False, blank=True)
+    is_transit_day_2 = models.BooleanField(default=False, blank=True)
 
     class Meta:
         verbose_name = "Занятие"
         verbose_name_plural = "Занятия"
+        unique_together = ('date', 'start_time')
 
     def __str__(self):
         return f"{self.number} {self.course} {self.topic}"
@@ -228,7 +246,7 @@ class Lesson(models.Model):
 
 class Comment(models.Model):
     """Creates model Comment"""
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    # lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default='')
     body = models.CharField(max_length=50)
     created = models.DateTimeField(auto_now_add=True)

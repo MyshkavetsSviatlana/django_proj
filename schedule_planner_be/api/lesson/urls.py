@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 
-urlpatterns =[
+urlpatterns = [
     path('', views.LessonListView.as_view()),
     path('morning/', views.LessonMorningListView.as_view()),
     path('evening/', views.LessonEveningListView.as_view()),
