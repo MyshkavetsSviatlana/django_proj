@@ -15,7 +15,6 @@
         <p>number of lessons: {{ course.number_of_lessons}}</p>
         <p>course type: {{ course.course_type}}</p>
         <p>all course dates: {{ course.all_course_days}}</p>
-        <p>end date: {{ course.end_date}}</p>
     </div>
     <p><a href="{% url 'course_edit' course.url %}">Править курс</a></p>
     <p><a href="{% url 'course_confirm_delete' course.url %}">Удалить курс</a></p>
