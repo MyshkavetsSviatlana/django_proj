@@ -7,9 +7,17 @@ class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
 
 
 class LessonFilter(filters.FilterSet):
-    """Фильтрация по имени курса, учителю, локации"""
+    """Фильтрация по имени курса, учителю, локации, дате"""
     date = DateFromToRangeFilter(field_name='date')
 
     class Meta:
         model = Lesson
-        fields = ['course__course_name', 'teacher', 'course__location', 'date']
+        fields = ['course', 'teacher', 'course__location', 'date']
+
+
+class LessonTeacherFilter(filters.FilterSet):
+    """Фильтрация по имени курса, учителю"""
+
+    class Meta:
+        model = Lesson
+        fields = ['course', 'teacher']

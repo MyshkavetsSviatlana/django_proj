@@ -1,10 +1,8 @@
 from django.contrib.auth import get_user_model
-from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 from rest_framework.test import APIRequestFactory
 from . import views
 from Teacher.models import Teacher
-from User.models import User
 
 
 class TestTeacher(APITestCase):
