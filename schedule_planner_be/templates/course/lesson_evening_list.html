@@ -17,7 +17,7 @@
         </a>
         {% endfor %}
     </div>
-    <form action="{% url 'morning_filter' %}" method="get">
+    <form action="{% url 'evening_filter' %}" method="get">
     <div class="left-side my-4">
         <h3 class="sear-head editContent">Course</h3>
         <ul class="w3layouts-box-list">
@@ -49,6 +49,15 @@
                 <span class="span editContent">{{ teacher.surname }}</span>
             </li>
             {% endfor %}
+        </ul>
+    </div>
+        <div class="left-side my-4">
+        <h3 class="sear-head editContent">Date range</h3>
+        <ul class="w3layouts-box-list">
+            <li class="editContent">
+                <input type="search" placeholder="from XXXX-XX-XX" name="start">
+                <input type="search" placeholder="to XXXX-XX-XX" name="end">
+            </li>
         </ul>
     </div>
     <button type="submit"> Find </button>

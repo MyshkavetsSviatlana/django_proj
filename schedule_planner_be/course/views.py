@@ -104,10 +104,10 @@ class GetValuesFoFilters:
         return Course.objects.filter(course_type='Evening schedule').values('course_name')
 
     def get_morning_location(self):
-        return Course.objects.filter(course_type='Morning schedule').values('location__location__street')
+        return Course.objects.filter(course_type='Morning schedule').values('location__location__street').distinct()
 
     def get_evening_location(self):
-        return Course.objects.filter(course_type='Evening schedule').values('location__location__street')
+        return Course.objects.filter(course_type='Evening schedule').values('location__location__street').distinct()
 
     # def get_date(self):
     #     return Lesson.objects.all().get.values('data')
@@ -176,15 +176,10 @@ class FilterLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     template_name = 'course/lesson_list.html'
 
     def get_queryset(self):
-        start = datetime.datetime.strptime(self.request.GET.get("start")[0], format='%Y-%m-%d')
-        end = datetime.datetime.strptime(self.request.GET.get("end")[0], format='%Y-%m-%d')
-        # start = self.request.GET.get("start")[0]
-        # end = self.request.GET.get("end")[0]
+
         queryset = Lesson.objects.all().filter(
             Q(teacher__surname__in=self.request.GET.getlist("surname")) |
-            Q(course__course_name__in=self.request.GET.getlist("course_name")) |
-            Q(course__location__location__street__in=self.request.GET.getlist("location")) |
-            Q(date__range=(start, end))
+            Q(course__course_name__in=self.request.GET.getlist("course_name"))
             )
         return queryset
 
@@ -194,13 +189,96 @@ class FilterMorningLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     template_name = 'course/lesson_morning_list.html'
 
     def get_queryset(self):
+        surname = self.request.GET.getlist("surname")
+        course_name = self.request.GET.getlist("course_name")
+        location = self.request.GET.getlist("location")
+        start = self.request.GET.get("start")
+        end = self.request.GET.get("end")
         morning_lessons = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]
-        queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
-            Q(teacher__surname__in=self.request.GET.getlist("surname")) |
-            Q(course__course_name__in=self.request.GET.getlist("course_name")) |
-            Q(course__location__location__street__in=self.request.GET.getlist("location"))
+        if surname and course_name and location and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__course_name__in=course_name) &
+                Q(course__location__location__street__in=location) &
+                Q(date__range=(start, end))
             )
-        return queryset
+            return queryset
+        elif surname and course_name and location:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__course_name__in=course_name) &
+                Q(course__location__location__street__in=location)
+            )
+            return queryset
+        elif surname and course_name and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__location__location__street__in=location) &
+                Q(date__range=(start, end))
+            )
+            return queryset
+        elif surname and location and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__course_name__in=course_name) &
+                Q(date__range=(start, end))
+            )
+            return queryset
+        elif course_name and location and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(course__course_name__in=course_name) &
+                Q(course__location__location__street__in=location) &
+                Q(date__range=(start, end))
+            )
+            return queryset
+        elif surname and course_name:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__course_name__in=course_name)
+            )
+            return queryset
+        elif surname and location:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__location__location__street__in=location)
+            )
+            return queryset
+        elif surname and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(date__range=(start, end))
+            )
+            return queryset
+        elif course_name and location:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(course__course_name__in=course_name) &
+                Q(course__location__location__street__in=location)
+            )
+            return queryset
+        elif course_name and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(course__course_name__in=course_name) &
+                Q(date__range=(start, end))
+            )
+            return queryset
+        elif location and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(course__location__location__street__in=location) &
+                Q(date__range=(start, end))
+            )
+            return queryset
+        elif start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(date__range=(start, end))
+            )
+            return queryset
+        else:
+            queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
+                Q(teacher__surname__in=surname) |
+                Q(course__course_name__in=course_name) |
+                Q(course__location__location__street__in=location)
+            )
+            return queryset
 
 
 class FilterEveningLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
@@ -208,13 +286,96 @@ class FilterEveningLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     template_name = 'course/lesson_evening_list.html'
 
     def get_queryset(self):
+        surname = self.request.GET.getlist("surname")
+        course_name = self.request.GET.getlist("course_name")
+        location = self.request.GET.getlist("location")
+        start = self.request.GET.get("start")
+        end = self.request.GET.get("end")
         evening_lessons = ["17:00", "18:00", "19:00"]
-        queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
-            Q(teacher__surname__in=self.request.GET.getlist("surname")) |
-            Q(course__course_name__in=self.request.GET.getlist("course_name")) |
-            Q(course__location__location__street__in=self.request.GET.getlist("location"))
+        if surname and course_name and location and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__course_name__in=course_name) &
+                Q(course__location__location__street__in=location) &
+                Q(date__range=(start, end))
+                )
+            return queryset
+        elif surname and course_name and location:
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__course_name__in=course_name) &
+                Q(course__location__location__street__in=location)
             )
-        return queryset
+            return queryset
+        elif surname and course_name and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__location__location__street__in=location) &
+                Q(date__range=(start, end))
+            )
+            return queryset
+        elif surname and location and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__course_name__in=course_name) &
+                Q(date__range=(start, end))
+            )
+            return queryset
+        elif course_name and location and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(course__course_name__in=course_name) &
+                Q(course__location__location__street__in=location) &
+                Q(date__range=(start, end))
+            )
+            return queryset
+        elif surname and course_name :
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__course_name__in=course_name)
+                )
+            return queryset
+        elif surname and location:
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(course__location__location__street__in=location)
+                )
+            return queryset
+        elif surname and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(teacher__surname__in=surname) &
+                Q(date__range=(start, end))
+                )
+            return queryset
+        elif course_name and location :
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(course__course_name__in=course_name) &
+                Q(course__location__location__street__in=location)
+                )
+            return queryset
+        elif course_name and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(course__course_name__in=course_name) &
+                Q(date__range=(start, end))
+                )
+            return queryset
+        elif location and start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(course__location__location__street__in=location) &
+                Q(date__range=(start, end))
+                )
+            return queryset
+        elif start and end:
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(date__range=(start, end))
+            )
+            return queryset
+        else:
+            queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
+                Q(teacher__surname__in=surname) |
+                Q(course__course_name__in=course_name) |
+                Q(course__location__location__street__in=location)
+                )
+            return queryset
 
 
 def csv_courses_list_write(request):

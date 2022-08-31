@@ -13,18 +13,20 @@ User = get_user_model()
 
 
 class SendRepeadMessage(View):
-    def post(self, request):
-        email = request.data.get('email')
-        try:
-         user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            raise ValueError('No user with such email')
-        last_mail = user.last_send_mail
-        delta = datetime.datetime.now() - datetime.timedelta(seconds=60)
-        if delta > last_mail:
-            return send(request, user)
-        else:
-            raise ValueError('Wait for 60 seconds to pass')
+    template_name = 'registration/send_repeat_message.html'
+    # def post(self, request):
+    #     email = request.data.get('email')
+    #     try:
+    #      user = User.objects.get(email=email)
+    #     except User.DoesNotExist:
+    #         raise ValueError('No user with such email')
+    #     last_mail = user.last_send_mail
+    #     delta = datetime.datetime.now() - datetime.timedelta(seconds=60)
+    #     if delta > last_mail:
+    #         send(request, user)
+    #         return redirect('home')
+    #     else:
+    #         raise ValueError('Wait for 60 seconds to pass')
 
 
 class MyLoginView(LoginView):

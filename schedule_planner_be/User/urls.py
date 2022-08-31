@@ -17,5 +17,7 @@ urlpatterns = [
         ),
         name='invalid_verify'
 
-    )
+    ),
+    # path('send_repeat_message/', views.SendRepeadMessage.as_view(),
+    #      name='send_repeat_message')
 ]
