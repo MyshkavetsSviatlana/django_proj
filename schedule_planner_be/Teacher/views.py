@@ -28,7 +28,7 @@ class TeacherDetailView(LoginRequiredMixin, DetailView):
     """Вывод полного описания учителей"""
     model = Teacher
     template_name = 'Teacher/teacher_detail.html'
-    slug_field = 'url'
+
 
     def get_queryset(self):
         teachers = Teacher.objects.filter(is_active=True)
@@ -53,7 +53,7 @@ class TeacherUpdateView(LoginRequiredMixin, TeacherPermissionsMixin, UpdateView)
     template_name = 'Teacher/teacher_edit.html'
     fields = ['surname', 'name', 'specialization', 'course_name']
     success_url = "/teachers/"
-    slug_field = 'url'
+
 
     def get_queryset(self):
         teachers = Teacher.objects.filter(is_active=True)
@@ -66,7 +66,6 @@ class TeacherDeleteView(LoginRequiredMixin, TeacherPermissionsMixin, DeleteView)
     template_name = 'Teacher/teacher_confirm_delete.html'
     fields = ['is_active']
     success_url = "/teachers/"
-    slug_field = 'url'
 
     def get_queryset(self):
         teachers = Teacher.objects.filter(is_active=True)

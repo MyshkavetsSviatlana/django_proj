@@ -176,8 +176,10 @@ class FilterLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     template_name = 'course/lesson_list.html'
 
     def get_queryset(self):
-        start = self.request.GET.get("start")[0]
-        end = self.request.GET.get("end")[0]
+        start = datetime.datetime.strptime(self.request.GET.get("start")[0], format='%Y-%m-%d')
+        end = datetime.datetime.strptime(self.request.GET.get("end")[0], format='%Y-%m-%d')
+        # start = self.request.GET.get("start")[0]
+        # end = self.request.GET.get("end")[0]
         queryset = Lesson.objects.all().filter(
             Q(teacher__surname__in=self.request.GET.getlist("surname")) |
             Q(course__course_name__in=self.request.GET.getlist("course_name")) |

@@ -1,7 +1,6 @@
 from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from multiselectfield import MultiSelectField
 import datetime
@@ -23,7 +22,7 @@ class Teacher(models.Model):
             code=_('invalid_name')
         ),
     ])
-    fathers_name = models.CharField(_("Father's name"), max_length=50, blank=True, validators=[
+    fathers_name = models.CharField(_("Middle name"), max_length=50, blank=True, validators=[
         RegexValidator(
             regex="^[А-яа-я-\s]{1,50}$",
             message=_("Write correct father's name"),
@@ -33,7 +32,7 @@ class Teacher(models.Model):
     age = models.PositiveSmallIntegerField(_("Age"), default=0, blank=True)
     start_date = models.DateField(_('Start date of teaching'), blank=True, default=datetime.date.today)
     group_count = models.PositiveSmallIntegerField(_("Number of groups"), default=0, blank=True)
-    specialization = models.CharField(_("Specialization"), max_length=250, validators=[
+    specialization = models.CharField(_("Teacher Specialization"), max_length=250, validators=[
         RegexValidator(
             regex="^[А-яа-я-\s]{1,250}$",
             message=_("Write correct specialization"),
@@ -112,13 +111,12 @@ class Teacher(models.Model):
     phone = models.CharField(_('Phone'), max_length=25, blank=True)
     image = models.ImageField(_("Photo"), upload_to="Teachers/", blank=True)
     is_active = models.BooleanField(_('Status'), default=True)
-    url = models.SlugField(max_length=160, unique=True, default=None)
 
     def __str__(self):
         return f"{self.surname} {self.name}"
 
     def get_absolute_url(self):
-        return reverse('teacher_detail', kwargs={'slug': self.url})
+        return reverse('teacher_detail', kwargs={'pk': self.pk})
 
     class Meta:
         db_table = "teacher"

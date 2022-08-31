@@ -71,7 +71,7 @@ class TestsLessonCreateAdministrator(APITestCase):
         self.user = User.objects.create_user(email="test@gmail.com", password="Test1234", role="Administrator")
         self.factory = APIRequestFactory()
         teacher = Teacher.objects.create(surname='Тестов', name='Тест', specialization='тесты',
-                                         course_name=['IT-рекрутер', 'Бизнес-анализ'], is_active=True, url='2')
+                                         course_name=['IT-рекрутер', 'Бизнес-анализ'], is_active=True)
         subwaystation = SubwayStation.objects.create(station='Test station')
         location = Location.objects.create(city='Test city', street='Test street', building='1', subway=subwaystation)
         classroom = Classroom.objects.create(classroom="111", seats_number=111, pc_number=111, location=location)
@@ -170,7 +170,7 @@ class TestsLessonDestroySuperAdmin(APITestCase):
         self.user = User.objects.create_user(email="test@gmail.com", password="Test1234", role="Super Admin")
         self.factory = APIRequestFactory()
         teacher = Teacher.objects.create(surname='Тестов', name='Тест', specialization='тесты',
-                                         course_name=['IT-рекрутер', 'Бизнес-анализ'], is_active=True, url='2')
+                                         course_name=['IT-рекрутер', 'Бизнес-анализ'], is_active=True)
         subwaystation = SubwayStation.objects.create(station='Test station')
         location = Location.objects.create(city='Test city', street='Test street', building='1', subway=subwaystation)
         classroom = Classroom.objects.create(classroom="111", seats_number=111, pc_number=111, location=location)
@@ -197,7 +197,7 @@ class TestsLessonDestroyAdministrator(APITestCase):
         self.user = User.objects.create_user(email="test@gmail.com", password="Test1234", role="Administrator")
         self.factory = APIRequestFactory()
         teacher = Teacher.objects.create(surname='Тестов', name='Тест', specialization='тесты',
-                                         course_name=['IT-рекрутер', 'Бизнес-анализ'], is_active=True, url='2')
+                                         course_name=['IT-рекрутер', 'Бизнес-анализ'], is_active=True)
         subwaystation = SubwayStation.objects.create(station='Test station')
         location = Location.objects.create(city='Test city', street='Test street', building='1', subway=subwaystation)
         classroom = Classroom.objects.create(classroom="111", seats_number=111, pc_number=111, location=location)
