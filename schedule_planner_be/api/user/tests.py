@@ -10,8 +10,9 @@ class TestUser(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.user = get_user_model().objects.create_user(
+            first_name='Тест',
             email='test@email.com',
-            password='Password1234',
+            password='Pass1234',
             role='Super Admin'
         )
         self.user.save()
@@ -26,8 +27,7 @@ class TestUser(APITestCase):
     def test_create_user(self):
         request = self.factory.post('/api/v1/new/', {
             "email": 'test1@mail.ru',
-            "fist_name": 'Тестовый',
-            "last_name": 'Пользователь',
+            "first_name": 'Тестовый',
             "role": 'Manager',
             "password": 'Pass1234'
         })

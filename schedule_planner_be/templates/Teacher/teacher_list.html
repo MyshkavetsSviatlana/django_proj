@@ -9,7 +9,7 @@
 {% if teacher_list %}
     {% for teacher in teacher_list %}
     <div>
-        <a href="{% url 'teacher_detail' teacher.url %}"><h2>{{ teacher.surname }} {{ teacher.name }}</h2></a>
+        <a href="{% url 'teacher_detail' teacher.pk %}"><h2>{{ teacher.surname }} {{ teacher.name }}</h2></a>
     </div>
     {% endfor %}
 {% else %}
