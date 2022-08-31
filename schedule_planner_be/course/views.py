@@ -176,12 +176,20 @@ class FilterLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     template_name = 'course/lesson_list.html'
 
     def get_queryset(self):
-
-        queryset = Lesson.objects.all().filter(
-            Q(teacher__surname__in=self.request.GET.getlist("surname")) |
-            Q(course__course_name__in=self.request.GET.getlist("course_name"))
+        surname = self.request.GET.getlist("surname")
+        course_name = self.request.GET.getlist("course_name")
+        if surname and course_name:
+            queryset = Lesson.objects.all().filter(
+                Q(teacher__surname__in=self.request.GET.getlist("surname")) &
+                Q(course__course_name__in=self.request.GET.getlist("course_name"))
+                )
+            return queryset
+        else:
+            queryset = Lesson.objects.all().filter(
+                Q(teacher__surname__in=self.request.GET.getlist("surname")) |
+                Q(course__course_name__in=self.request.GET.getlist("course_name"))
             )
-        return queryset
+            return queryset
 
 
 class FilterMorningLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
