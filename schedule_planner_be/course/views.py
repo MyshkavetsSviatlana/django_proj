@@ -1,4 +1,6 @@
 import csv
+import datetime
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponse
@@ -107,8 +109,8 @@ class GetValuesFoFilters:
     def get_evening_location(self):
         return Course.objects.filter(course_type='Evening schedule').values('location__location__street')
 
-    def get_date(self):
-        return Lesson.objects.all().get.values('data')
+    # def get_date(self):
+    #     return Lesson.objects.all().get.values('data')
 
 
 class LessonListView(LoginRequiredMixin, GetValuesFoFilters, ListView):
@@ -174,10 +176,13 @@ class FilterLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     template_name = 'course/lesson_list.html'
 
     def get_queryset(self):
+        start = self.request.GET.get("start")[0]
+        end = self.request.GET.get("end")[0]
         queryset = Lesson.objects.all().filter(
             Q(teacher__surname__in=self.request.GET.getlist("surname")) |
             Q(course__course_name__in=self.request.GET.getlist("course_name")) |
-            Q(course__location__location__street__in=self.request.GET.getlist("location"))
+            Q(course__location__location__street__in=self.request.GET.getlist("location")) |
+            Q(date__range=(start, end))
             )
         return queryset
 

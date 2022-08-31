@@ -12,7 +12,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_('The Email must be set'))
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        if len(password) < 8:
+        if len(password) != 8:
             raise ValueError(_('Password should have 8 symbols'))
         if (bool(re.search(r'[A-Z]', password))) is not True:
             raise ValueError(_('Password should have one uppercase letter'))
