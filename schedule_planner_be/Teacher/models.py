@@ -34,7 +34,7 @@ class Teacher(models.Model):
     group_count = models.PositiveSmallIntegerField(_("Number of groups"), default=0, blank=True)
     specialization = models.CharField(_("Teacher Specialization"), max_length=250, validators=[
         RegexValidator(
-            regex="^[А-яа-я-\s]{1,250}$",
+            regex="^[-!#$%&'*+./=?^_`{}|~A-Za-zА-яа-я-\s]{1,250}$",
             message=_("Write correct specialization"),
             code=_('invalid_specialization')
         ),
