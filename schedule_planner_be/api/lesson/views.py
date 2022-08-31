@@ -59,7 +59,7 @@ class LessonCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated & LessonPermissionsMixin]
 
 
-class LessonUpdateView(generics.UpdateAPIView):
+class LessonUpdateView(generics.RetrieveAPIView, generics.UpdateAPIView):
     """Изменение занятия"""
     queryset = Lesson.objects.all()
     serializer_class = LessonDetailSerializer

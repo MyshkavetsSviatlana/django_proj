@@ -10,7 +10,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('Email'), max_length=150, unique=True,
                               help_text=_('Enter email in format example@gmail.ru'), validators=[
         RegexValidator(
-            regex="^([A-Za-z0-9]{1}[-!#$%&'*+./=?^_`{}|~A-Za-z0-9]{1,63})@([A-za-z0-9-]{1,}\.){1,2}[A-za-z0-9-]{2,6}$",
+            regex="^([A-Za-z0-9]{1}[-!#$%&'*+./=?^_`{}|~A-Za-z0-9]{1,63})@([A-za-z0-9]{1,}\.){1,2}[A-za-z0-9-]{2,6}$",
             message=_('Invalid email'),
             code=_('invalid_email')
         ),
