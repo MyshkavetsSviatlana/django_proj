@@ -84,10 +84,10 @@ def csv_lessons_list_write(request):
     response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response, delimiter=';', dialect='excel')
     writer.writerow(['Номер занятия в курсе', 'Название курса', 'Преподаватель', 'Тема занятия', 'Краткое описание',
-                     'Дата занятия', 'Время занятия', 'Комментарий'])
+                     'Дата занятия', 'Время занятия'])
 
     for lesson in lessons:
         writer.writerow([lesson.number, lesson.course, lesson.teacher, lesson.topic, lesson.description,
-                         lesson.date, lesson.start_time, lesson.comment])
+                         lesson.date, lesson.start_time])
 
     return response

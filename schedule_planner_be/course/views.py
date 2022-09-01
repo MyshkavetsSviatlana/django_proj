@@ -220,10 +220,10 @@ def csv_courses_list_write(request):
     response['Content-Disposition'] = 'attachment; filename="courses_list.csv"'
     response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response, delimiter=';', dialect='excel')
-    writer.writerow(['id', 'Название курса', 'Преподаватель', 'Дата старта', 'Время начала', 'Кол-во уроков'])
+    writer.writerow(['Название курса', 'Преподаватель', "Локация", 'Дата старта', 'Время начала', 'Кол-во уроков'])
 
     for course in courses:
-        writer.writerow([course.id, course.course_name, course.teacher, course.start_date, course.start_time,
+        writer.writerow([course.course_name, course.teacher, course.location, course.start_date, course.start_time,
                          course.number_of_lessons])
 
     return response
