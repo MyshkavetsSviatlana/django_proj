@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Django Schedule</title>
-</head>
-<body>
-<div>
-    <h1>Delete lesson</h1>
-    <form action="" method="post">
-        {% csrf_token %}
-        <p>Are you sure you want to delete "{{ lesson.topic }}"?</p>
-        <input type="submit" value="Confirm" />
-    </form>
-</div>
-</body>
-</html>
+{% extends 'layout/basic.html' %}
+
+{% block title %}Удалить занятие :: Занятия{% endblock %}
+
+{% block content %}
+<h1>Вы уверены, что хотите удалить занятие {{ lesson.topic }}?</h1>
+<form method='post'>
+    {% csrf_token %}
+    <input type='submit' value='Удалить'>
+</form>
+{% endblock %}

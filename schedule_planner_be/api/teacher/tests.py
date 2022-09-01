@@ -11,7 +11,8 @@ class TestTeacher(APITestCase):
         self.factory = APIRequestFactory()
         self.user = get_user_model().objects.create_user(
             email='test@email.com',
-            password='Password1234',
+            first_name='Тест',
+            password='Pass1234',
             role='Super Admin'
         )
         self.user.save()
@@ -20,7 +21,6 @@ class TestTeacher(APITestCase):
             name='Александр',
             specialization='Питон',
             course_name='Python',
-            url='1',
         )
         self.teacher.save()
 
@@ -44,7 +44,6 @@ class TestTeacher(APITestCase):
             "name": 'Создание',
             "specialization": 'Питон',
             "course_name": 'Основы разработки сайтов',
-            "url": '2'
         })
         request.user = self.user
         response = views.TeacherCreateView.as_view()(request)

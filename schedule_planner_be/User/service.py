@@ -1,14 +1,5 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail, EmailMessage
-
-# def send(user_email):
-#     send_mail(
-#         'Вы зарегестрировались на нашем сайте',
-#         'С уважением, Академия BelHard!',
-#         'ag.charniauskaya@gmail.com',
-#         [user_email],
-#         fail_silently=False
-#     )
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode

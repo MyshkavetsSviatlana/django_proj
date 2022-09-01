@@ -1,20 +1,21 @@
 import datetime
 from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.contrib.auth import authenticate, get_user_model, login
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordResetConfirmView
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
 from django.utils.http import urlsafe_base64_decode
 from django.views import generic, View
-from .forms import UserCreationForm, UserAuthenticationForm
+from .forms import UserCreationForm, UserAuthenticationForm, MySetPasswordForm
 from .service import send
-
 User = get_user_model()
 
 
-class SendRepeadMessage(View):
-    def post(self, request):
-        email = request.data.get('email')
+class SendRepeatMessage(View):
+    # template_name = 'registration/send_repeat_message.html'
+
+    def get(self, request):
+        email = request.GET.get('email')
         try:
          user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -22,7 +23,8 @@ class SendRepeadMessage(View):
         last_mail = user.last_send_mail
         delta = datetime.datetime.now() - datetime.timedelta(seconds=60)
         if delta > last_mail:
-            return send(request, user)
+            send(request, user)
+            return redirect('home')
         else:
             raise ValueError('Wait for 60 seconds to pass')
 
@@ -63,7 +65,7 @@ class EmailVerify(View):
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
     template_name = 'User/signup.html'
-    success_url = "/"
+    success_url = "/schedule/schedules/"
 
     def post(self, request, *args, **kwargs):
         form = UserCreationForm(request.POST)
@@ -79,4 +81,8 @@ class SignUp(generic.CreateView):
             'form': form
         }
         return render(request, self.template_name, context)
+
+
+class MyPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = MySetPasswordForm
 

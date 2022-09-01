@@ -143,8 +143,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST_PASSWORD = 'zuzqanzlaenlszbl'
 # EMAIL_PORT = 587
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/schedule/schedules/'
+LOGOUT_REDIRECT_URL = '/user/login/'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

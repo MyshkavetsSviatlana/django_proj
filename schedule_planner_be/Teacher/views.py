@@ -1,12 +1,7 @@
 import csv
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
-
 from .models import Teacher
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -28,7 +23,6 @@ class TeacherDetailView(LoginRequiredMixin, DetailView):
     """Вывод полного описания учителей"""
     model = Teacher
     template_name = 'Teacher/teacher_detail.html'
-    slug_field = 'url'
 
     def get_queryset(self):
         teachers = Teacher.objects.filter(is_active=True)
@@ -51,9 +45,8 @@ class TeacherUpdateView(LoginRequiredMixin, TeacherPermissionsMixin, UpdateView)
     """Изменение учителей"""
     model = Teacher
     template_name = 'Teacher/teacher_edit.html'
-    fields = ['surname', 'name', 'specialization', 'course_name']
+    fields = ['surname', 'name', 'fathers_name', 'specialization', 'course_name']
     success_url = "/teachers/"
-    slug_field = 'url'
 
     def get_queryset(self):
         teachers = Teacher.objects.filter(is_active=True)
@@ -66,7 +59,6 @@ class TeacherDeleteView(LoginRequiredMixin, TeacherPermissionsMixin, DeleteView)
     template_name = 'Teacher/teacher_confirm_delete.html'
     fields = ['is_active']
     success_url = "/teachers/"
-    slug_field = 'url'
 
     def get_queryset(self):
         teachers = Teacher.objects.filter(is_active=True)

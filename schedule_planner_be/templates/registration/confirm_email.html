@@ -1,13 +1,11 @@
 {% extends 'User/_base.html' %}
 
-{% block title %}Verify email{% endblock %}
-
 {% block content %}
     <h2>Verification</h2>
     <div class="row">
         <p>Please check your email to complete your registration.</p>
         <p>If within 60 seconds you have not received a letter, click on the button</p>
-        <button type="submit">Send mail</button>
+        <a href="{% url 'send_repeat_message' %}"><button type="button">Send repeat message</button></a>
     </div>
 
 {% endblock %}

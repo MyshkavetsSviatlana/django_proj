@@ -11,6 +11,6 @@
         <p>{{ teacher.group_count }}</p>
         <p>{{ teacher.specialization}}</p>
     </div>
-    <p><a href="{% url 'teacher_edit' teacher.url %}">Обновить профиль преподавателя</a></p>
-    <p><a href="{% url 'teacher_confirm_delete' teacher.url %}">Удалить преподавателя</a></p>
+    <p><a href="{% url 'teacher_edit' teacher.pk %}">Обновить профиль преподавателя</a></p>
+    <p><a href="{% url 'teacher_confirm_delete' teacher.pk %}">Удалить преподавателя</a></p>
 {% endblock %}
