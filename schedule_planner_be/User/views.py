@@ -65,7 +65,7 @@ class EmailVerify(View):
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
     template_name = 'User/signup.html'
-    success_url = "/"
+    success_url = "/schedule/schedules/"
 
     def post(self, request, *args, **kwargs):
         form = UserCreationForm(request.POST)

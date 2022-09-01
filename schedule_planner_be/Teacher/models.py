@@ -11,22 +11,22 @@ class Teacher(models.Model):
     surname = models.CharField(_("Surname"), max_length=50, validators=[
         RegexValidator(
             regex="^[А-яа-я-\s]{1,50}$",
-            message=_('Write correct surname'),
+            message=_('Invalid surname'),
             code=_('invalid_surname')
         ),
     ])
     name = models.CharField(_("Name"), max_length=50, validators=[
         RegexValidator(
             regex="^[А-яа-я-\s]{1,50}$",
-            message=_('Write correct name'),
+            message=_('Invalid name'),
             code=_('invalid_name')
         ),
     ])
     fathers_name = models.CharField(_("Middle name"), max_length=50, blank=True, validators=[
         RegexValidator(
             regex="^[А-яа-я-\s]{1,50}$",
-            message=_("Write correct father's name"),
-            code=_('invalid_fathers_name')
+            message=_("Invalid middle name"),
+            code=_('invalid_middle_name')
         ),
     ])
     age = models.PositiveSmallIntegerField(_("Age"), default=0, blank=True)
@@ -35,7 +35,7 @@ class Teacher(models.Model):
     specialization = models.CharField(_("Teacher Specialization"), max_length=250, validators=[
         RegexValidator(
             regex="^[-!#$%&'*+./=?^_`{}|~A-Za-zА-яа-я-\s]{1,250}$",
-            message=_("Write correct specialization"),
+            message=_("Invalid specialization"),
             code=_('invalid_specialization')
         ),
     ])
