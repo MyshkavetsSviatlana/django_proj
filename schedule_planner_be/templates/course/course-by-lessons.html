@@ -1,0 +1,14 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %}{{ current_course.course_name }} :: Current Course{% endblock %}
+
+{% block content %}
+<h1>Current Course :: {{ current_course.course_name }}</h1>
+<div class="row row-cols-1 row-cols-md-5 g-4">
+{% for lesson in lesson_list %}
+    <div>
+        <p><a href="{% url 'lesson_detail' lesson.course.pk %}">{{ lesson.topic }} {{ lesson.is_start_day }} {{ lesson.start_time }}</a></p>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

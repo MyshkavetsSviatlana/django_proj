@@ -1,6 +1,6 @@
 import csv
 import datetime
-
+from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponse
@@ -423,3 +423,10 @@ def csv_lessons_list_write(request):
                          lesson.date, lesson.start_time, lesson.comment])
 
     return response
+
+
+def course_by_lessons(request, course_id):
+    lesson_list = Lesson.objects.filter(course=course_id)
+    current_course = Course.objects.filter(pk=course_id)
+    context = {'lesson_list': lesson_list, 'current_course': current_course}
+    return render(request, 'course/course_by_lessons.html', context)
