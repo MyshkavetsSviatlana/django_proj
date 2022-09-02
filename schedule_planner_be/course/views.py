@@ -125,7 +125,7 @@ class LessonMorningListView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     template_name = 'course/lesson_morning_list.html'
 
     def get_queryset(self):
-        morning_lessons = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]
+        morning_lessons = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]
         queryset = Lesson.objects.all().filter(start_time__in=morning_lessons)
         return queryset
 
@@ -136,7 +136,7 @@ class LessonEveningListView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     template_name = 'course/lesson_evening_list.html'
 
     def get_queryset(self):
-        evening_lessons = ["17:00", "18:00", "19:00"]
+        evening_lessons = ["17:00", "18:00", "19:00", "20:00", "21:00"]
         queryset = Lesson.objects.all().filter(start_time__in=evening_lessons)
         return queryset
 
@@ -202,7 +202,7 @@ class FilterMorningLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
         location = self.request.GET.getlist("location")
         start = self.request.GET.get("start")
         end = self.request.GET.get("end")
-        morning_lessons = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]
+        morning_lessons = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]
         if surname and course_name and location and start and end:
             queryset = Lesson.objects.all().filter(start_time__in=morning_lessons).filter(
                 Q(teacher__surname__in=surname) &
@@ -299,7 +299,7 @@ class FilterEveningLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
         location = self.request.GET.getlist("location")
         start = self.request.GET.get("start")
         end = self.request.GET.get("end")
-        evening_lessons = ["17:00", "18:00", "19:00"]
+        evening_lessons = ["17:00", "18:00", "19:00", "20:00", "21:00"]
         if surname and course_name and location and start and end:
             queryset = Lesson.objects.all().filter(start_time__in=evening_lessons).filter(
                 Q(teacher__surname__in=surname) &
