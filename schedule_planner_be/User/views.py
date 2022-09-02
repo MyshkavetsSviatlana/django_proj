@@ -30,12 +30,13 @@ class SendRepeatMessage(View):
 
 
 class MyLoginView(LoginView):
+    """Логин"""
     form_class = UserAuthenticationForm
     template_name = 'registration/login.html'
 
 
 class EmailVerify(View):
-
+    """Верификация email"""
     def get(self, request, uidb64, token):
         user = self.get_user(uidb64)
         if user is not None and token_generator.check_token(user, token):
@@ -63,6 +64,7 @@ class EmailVerify(View):
 
 
 class SignUp(generic.CreateView):
+    """Регистрация"""
     form_class = UserCreationForm
     template_name = 'User/signup.html'
     success_url = "/schedule/schedules/"
@@ -84,5 +86,6 @@ class SignUp(generic.CreateView):
 
 
 class MyPasswordResetConfirmView(PasswordResetConfirmView):
+    """Сброс пароля"""
     form_class = MySetPasswordForm
 
