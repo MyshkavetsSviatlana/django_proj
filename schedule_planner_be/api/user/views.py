@@ -63,6 +63,7 @@ class LoginAPIView(generics.GenericAPIView): # доработать
     """Логин"""
     serializer_class = LoginSerializer
     queryset = User.objects.all()
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
