@@ -425,8 +425,22 @@ def csv_lessons_list_write(request):
     return response
 
 
-def course_by_lessons(request, course_id):
-    lesson_list = Lesson.objects.filter(course=course_id)
-    current_course = Course.objects.filter(pk=course_id)
+def course_by_lessons(request, pk):
+    lesson_list = Lesson.objects.filter(course=pk)
+    current_course = Course.objects.get(pk=pk)
     context = {'lesson_list': lesson_list, 'current_course': current_course}
     return render(request, 'course/course_by_lessons.html', context)
+
+
+def comments_by_lesson(request, pk):
+    comment_list = Comment.objects.filter(lesson=pk)
+    current_lesson = Lesson.objects.get(pk=pk)
+    context = {'comment_list': comment_list, 'current_lesson': current_lesson}
+    return render(request, 'course/comments_by_lesson.html', context)
+
+
+def comments_by_course(request, pk):
+    comment_list = Comment.objects.filter(course=pk)
+    current_course = Course.objects.get(pk=pk)
+    context = {'comment_list': comment_list, 'current_course': current_course}
+    return render(request, 'course/comments_by_lesson.html', context)

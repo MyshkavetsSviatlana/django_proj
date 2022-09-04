@@ -246,15 +246,17 @@ class Lesson(models.Model):
 
 class Comment(models.Model):
     """Creates model Comment"""
-    # lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, default='1')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, default='1')
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default='')
-    body = models.CharField(max_length=50)
+    body = models.TextField(max_length=2024)
     created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "Комментарий"
         verbose_name_plural = "Комментарии"
+        ordering = ['-created']
 
     def __str__(self):
         return f'{self.body}'
