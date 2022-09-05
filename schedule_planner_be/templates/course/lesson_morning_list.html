@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Django Schedule</title>
-</head>
-<body>
+{% extends 'layout/basic.html' %}
+
+{% block title %}Список курсов{% endblock %}
+
+{% block content %}
     <h1> List of morning lessons </h1>
     <a href="{% url 'lesson_form' %}"> Create new lesson </a>
     <div>
@@ -51,7 +49,15 @@
             {% endfor %}
         </ul>
     </div>
+    <div class="left-side my-4">
+        <h3 class="sear-head editContent">Date range</h3>
+        <ul class="w3layouts-box-list">
+            <li class="editContent">
+                <input type="search" placeholder="from" name="start">
+                <input type="search" placeholder="to" name="end">
+            </li>
+        </ul>
+    </div>
     <button type="submit"> Find </button>
     </form>
-</body>
-</html>
+{% endblock %}

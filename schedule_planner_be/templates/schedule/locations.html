@@ -4,7 +4,7 @@
 
 {% block content %}
     <h1>Список локаций</h1>
-
+    <a href="{% url 'add-location' %}"> Создать новую локацию </a>
     {% if location_list %}
     <ul>
         {% for location in location_list %}

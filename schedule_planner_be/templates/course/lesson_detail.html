@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Django Schedule</title>
-</head>
-<body>
-    <h1> Details of lesson </h1>
+{% extends 'layout/basic.html' %}
+
+{% block title %}Информация по занятию :: Занятия{% endblock %}
+
+{% block content %}
+<h1> Информация по занятию </h1>
     <div>
         <h2>{{ lesson.course__course_name }}</h2>
         <p>{{ lesson.number }}</p>
@@ -16,8 +14,6 @@
         <p>{{ lesson.description}}</p>
         <p>{{ lesson.comment__body}}</p>
     </div>
-    <p><a href="{% url 'lesson_edit' lesson.pk %}">+ Edit Lesson</a></p>
-    <p><a href="{% url 'lesson_confirm_delete' lesson.pk %}">+ Delete Lesson</a></p>
-</body>
-</html>
-
+    <p><a href="{% url 'lesson_edit' lesson.pk %}">Обновить занятия</a></p>
+    <p><a href="{% url 'lesson_confirm_delete' lesson.pk %}">Удалить занятие</a></p>
+{% endblock %}
