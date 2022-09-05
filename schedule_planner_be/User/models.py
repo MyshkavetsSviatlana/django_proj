@@ -29,7 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     email_verify = models.BooleanField(default=False)
-    last_send_mail= models.DateTimeField(auto_now=True)
+    last_send_mail = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

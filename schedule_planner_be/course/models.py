@@ -1,15 +1,18 @@
 import itertools
-
-from django.db.models import Q
+from datetime import date, time, datetime
+from django_currentuser.middleware import (
+    get_current_user, get_current_authenticated_user)
+from django_currentuser.db.models import CurrentUserField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
-from datetime import timedelta, datetime
+from datetime import timedelta
 from audioop import reverse
 from django.db import models
 from django.utils.datetime_safe import date
 from django.core.validators import MaxValueValidator
 from multiselectfield import MultiSelectField
+# from sqlalchemy.sql.functions import current_user
 
 from Teacher.models import Teacher
 from User.models import User
@@ -22,7 +25,7 @@ class Course(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
     start_date = models.DateField("Course start date", default=date.today)
     start_day_of_week = models.CharField("Start day of week", max_length=200, default="", blank=True,
-                                         help_text="The column will be filled in automatically after saving")
+                                         help_text="The field will be filled in automatically after saving")
 
     @property
     def start_day_isoweekday(self):
@@ -51,12 +54,12 @@ class Course(models.Model):
                                     max_choices=7, max_length=63, blank=True)
 
     LESSON_DURATION = (
-        ('1 hour', '1 hour'),
-        ('2 hours', '2 hours'),
-        ('3 hours', '3 hours'),
+        (1, 1),
+        (2, 2),
+        (3, 3),
     )
-    lesson_duration = models.CharField("Lesson duration", choices=LESSON_DURATION, default="",
-                                       max_length=7, blank=True)
+    lesson_duration = models.SmallIntegerField("Lesson duration", choices=LESSON_DURATION, null=True,
+                                               blank=True, help_text="hour(s)")
 
     @property
     def all_course_days(self):
@@ -113,9 +116,10 @@ class Course(models.Model):
         all_course_days = [i for i in all_course_days]
         return all_course_days
 
-    location = models.ForeignKey("schedule.Classroom", on_delete=models.DO_NOTHING)
+    location = models.ForeignKey("schedule.Classroom", on_delete=models.SET_NULL, null=True)
 
     START_TIME_OPTIONS = [
+        ("08:00", "08:00"),
         ("09:00", "09:00"),
         ("10:00", "10:00"),
         ("11:00", "11:00"),
@@ -127,13 +131,15 @@ class Course(models.Model):
         ("17:00", "17:00"),
         ("18:00", "18:00"),
         ("19:00", "19:00"),
+        ("20:00", "20:00"),
+        ("21:00", "21:00"),
     ]
 
     @property
     def start_time_options(self):
         # import pickle
         # location = self.location
-        # courses = Course.objects.filter(location=location).values_list('all_course_dates', 'start_time')
+        # lessons = Lesson.objects.filter(course__location=location).values('date', 'start_time', 'end_time')
         all_start_time_options = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00",
                                   "17:00", "18:00", "19:00", "20:00", "21:00"]
         all_reserved_options = [str(item) for item in
@@ -146,10 +152,24 @@ class Course(models.Model):
         # start_time_options = [(i, i) for i in all_start_time_options]
         start_time_options = [i for i in all_start_time_options]
         return start_time_options
+        # return print(lessons)
 
     choices = models.CharField("Start time options", max_length=200, default="", null=True, blank=True)
     start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, max_length=9)
+    end_time = models.TimeField("End time", null=True, blank=True,
+                                help_text="The field will be filled in automatically after saving")
     number_of_lessons = models.PositiveSmallIntegerField("Number of lessons", validators=[MaxValueValidator(50)])
+
+    @property
+    def find_end_time(self):
+        start_time = self.start_time
+        hour = int(start_time[:2])
+        minute = int(start_time[3:])
+        start_time_time = time(hour=hour, minute=minute)
+        hours = float(self.lesson_duration)
+        td = timedelta(hours=hours)
+        end_time = (datetime.combine(date.today(), start_time_time) + td).time()
+        return end_time
 
     @property
     def find_course_type(self):
@@ -162,19 +182,21 @@ class Course(models.Model):
             return "Evening schedule"
 
     course_type = models.CharField("Course type", max_length=16, blank=True, default="",
-                                   help_text="The column will be filled in automatically after saving")
+                                   help_text="The field will be filled in automatically after saving")
 
     all_course_dates = models.CharField("All course days", max_length=200, blank=True, default="",
-                                        help_text="The column will be filled in automatically after saving")
+                                        help_text="The field will be filled in automatically after saving")
 
     def save(self, *args, **kwargs):
         self.start_day_of_week = self.start_date.isoweekday()
         self.course_type = self.find_course_type
         self.choices = self.start_time_options
         self.all_course_dates = self.all_course_days
+        self.end_time = self.find_end_time
         super(Course, self).save(*args, **kwargs)
 
     url = models.SlugField(max_length=160, unique=True, default=None)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.course_name}, {self.start_date}, {self.start_time}, {self.location}"
@@ -191,35 +213,39 @@ class Course(models.Model):
 @receiver(post_save, sender=Course)
 def create_lessons(sender, instance, **kwargs):
     course = instance
-    teacher = course.teacher
-    start_time = course.start_time
-    number = 1
-    for dates in course.all_course_days:
-        index = course.all_course_days.index(dates)
-        if number == len(course.all_course_dates) + 1:
-            break
-        else:
-            if index == 0:
-                Lesson.objects.create(number=number, course=course, teacher=teacher,
-                                      date=dates,
-                                      start_time=start_time, is_start_day=True)
-            if index == len(course.all_course_dates) - 3:
-                Lesson.objects.create(number=number, course=course, teacher=teacher,
-                                      date=dates,
-                                      start_time=start_time, is_end_day=True)
-            if index == len(course.all_course_dates) - 2:
-                Lesson.objects.create(number=number, course=course, teacher=teacher,
-                                      date=dates,
-                                      start_time=start_time, is_transit_day_1=True)
-            if index == len(course.all_course_dates) - 1:
-                Lesson.objects.create(number=number, course=course, teacher=teacher,
-                                      date=dates,
-                                      start_time=start_time, is_transit_day_2=True)
-            if dates in course.all_course_dates[1:len(course.all_course_dates) - 3]:
-                Lesson.objects.create(number=number, course=course, teacher=teacher,
-                                      date=dates,
-                                      start_time=start_time)
-            number += 1
+    if Lesson.objects.filter(course=course):
+        pass
+    else:
+        teacher = course.teacher
+        location = course.location
+        start_time = course.start_time
+        end_time = course.end_time
+        number = 1
+        for dates in course.all_course_days:
+            index = course.all_course_days.index(dates)
+            if number == len(course.all_course_dates) + 1:
+                break
+            else:
+                if index == 0:
+                    Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
+                                          date=dates, start_time=start_time, end_time=end_time,
+                                          is_start_day=True)
+                if index == len(course.all_course_dates) - 3:
+                    Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
+                                          date=dates, start_time=start_time, end_time=end_time,
+                                          is_end_day=True)
+                if index == len(course.all_course_dates) - 2:
+                    Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
+                                          date=dates, start_time=start_time, end_time=end_time,
+                                          is_transit_day_1=True)
+                if index == len(course.all_course_dates) - 1:
+                    Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
+                                          date=dates, start_time=start_time, end_time=end_time,
+                                          is_transit_day_2=True)
+                if dates in course.all_course_dates[1:len(course.all_course_dates) - 3]:
+                    Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
+                                          date=dates, start_time=start_time, end_time=end_time)
+                number += 1
 
 
 class Comment(models.Model):
@@ -240,6 +266,7 @@ class Comment(models.Model):
 class Lesson(models.Model):
     """Создание модели занятия"""
     START_TIME_OPTIONS = [
+        ("08:00", "08:00"),
         ("09:00", "09:00"),
         ("10:00", "10:00"),
         ("11:00", "11:00"),
@@ -251,28 +278,29 @@ class Lesson(models.Model):
         ("17:00", "17:00"),
         ("18:00", "18:00"),
         ("19:00", "19:00"),
+        ("20:00", "20:00"),
+        ("21:00", "21:00"),
     ]
     number = models.PositiveSmallIntegerField("Number")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    location = models.ForeignKey("schedule.Classroom", on_delete=models.SET_NULL, null=True, blank=True)
     teacher = models.ForeignKey(Teacher, verbose_name="Преподаватель", on_delete=models.SET_NULL, null=True, blank=True)
     topic = models.CharField(max_length=100, blank=True)
     description = models.TextField("Description", blank=True)
     date = models.DateField("Date", default=date.today)
     start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, max_length=9)
+    end_time = models.TimeField("End time", null=True, blank=True)
     comment = models.ManyToManyField(Comment, blank=True, default=None)
     is_start_day = models.BooleanField(default=False, blank=True)
     is_end_day = models.BooleanField(default=False, blank=True)
     is_transit_day_1 = models.BooleanField(default=False, blank=True)
     is_transit_day_2 = models.BooleanField(default=False, blank=True)
+    created_by = CurrentUserField()
 
     class Meta:
         verbose_name = "Занятие"
         verbose_name_plural = "Занятия"
-        unique_together = ('date', 'start_time')
+        unique_together = ('location', 'date', 'start_time')
 
     def __str__(self):
         return f"{self.number} {self.course} {self.topic}"
-
-
-
-
