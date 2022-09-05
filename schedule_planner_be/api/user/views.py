@@ -1,6 +1,8 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 from .serializers import RegisterSerializer, LoginSerializer, EmailVerificationSerializer
 from User.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -16,6 +18,7 @@ class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     queryset = User.objects.all()
     permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
 
     def post(self, request):
         user = request.data
@@ -43,6 +46,7 @@ class VerifyEmail(generics.GenericAPIView):
     """Верификация email"""
     queryset = User.objects.all()
     serializer_class = EmailVerificationSerializer
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         token = request.GET.get('token')
@@ -64,6 +68,7 @@ class LoginAPIView(generics.GenericAPIView): # доработать
     serializer_class = LoginSerializer
     queryset = User.objects.all()
     permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
