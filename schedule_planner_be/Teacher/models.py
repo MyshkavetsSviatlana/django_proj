@@ -38,7 +38,7 @@ class Teacher(models.Model):
             message=_("Invalid specialization"),
             code=_('invalid_specialization')
         ),
-    ])
+    ], blank=True)
     COURSE_NAME = [('Управление и бизнес-анализ в сфере рзработки ПО',(
             ('Бизнес-анализ', 'Бизнес-анализ'),
             ('UML для бизнес-анализа', 'UML для бизнес-анализа'),
@@ -107,7 +107,7 @@ class Teacher(models.Model):
     ),
     ]
     course_name = MultiSelectField(_("Course name"), choices=COURSE_NAME, max_choices=7,
-                                    max_length=60, default=None)
+                                    max_length=60, default=None, blank=True)
     phone = models.CharField(_('Phone'), max_length=25, blank=True)
     image = models.ImageField(_("Photo"), upload_to="Teachers/", blank=True)
     is_active = models.BooleanField(_('Status'), default=True)
