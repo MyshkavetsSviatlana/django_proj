@@ -1,7 +1,7 @@
 import csv
 import datetime
 from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
 from django.http import HttpResponse
 from .models import Course, Comment, Lesson
@@ -65,7 +65,7 @@ class CommentCreateView(CreateView):
     success_url = "/"
 
 
-class CommentDeleteView(DeleteView):
+class CommentDeleteView(UserPassesTestMixin, DeleteView):
     """Удаление комментария"""
     model = Comment
     template_name = 'course/comment_confirm_delete.html'
@@ -73,14 +73,22 @@ class CommentDeleteView(DeleteView):
     success_url = "/"
     slug_field = 'url'
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
 
-class CommentUpdateView(UpdateView):
+
+class CommentUpdateView(UserPassesTestMixin, UpdateView):
     """Изменение курса"""
     model = Comment
     template_name = 'course/comment_edit.html'
     fields = '__all__'
     success_url = "/"
     slug_field = 'url'
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
 
 
 class CommentDetailView(DetailView):

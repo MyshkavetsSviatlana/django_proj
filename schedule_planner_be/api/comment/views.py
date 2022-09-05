@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from api.comment.serializers import CommentSerializer
 from schedule.models import Comment
-from api.location.permissions import LocationPermissionsMixin
+from api.comment.permissions import CommentPermissionsMixin, IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -16,5 +16,5 @@ class CommentViewSet(viewsets.ModelViewSet):
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
         else:
-            permission_classes = [IsAuthenticated & LocationPermissionsMixin]
+            permission_classes = [IsAuthenticated & CommentPermissionsMixin & IsOwnerOrReadOnly]
         return [permission() for permission in permission_classes]
