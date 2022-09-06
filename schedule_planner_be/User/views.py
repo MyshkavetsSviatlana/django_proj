@@ -15,9 +15,9 @@ class SendRepeatMessage(View):
     # template_name = 'registration/send_repeat_message.html'
 
     def get(self, request):
-        email = request.GET.get('email')
+        email = self.request.GET.get('email')
         try:
-         user = User.objects.get(email=email)
+            user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise ValueError('No user with such email')
         last_mail = user.last_send_mail
