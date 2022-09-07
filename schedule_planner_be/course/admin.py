@@ -18,7 +18,7 @@ class LessonAdmin(admin.ModelAdmin):
                     "is_transit_day_2"]
     ordering = ["number"]
     search_fields = ["topic"]
-    list_filter = ["course__course_name", "teacher", "date", "start_time"]
+    list_filter = ["course__course_name", "teacher", "date", "start_time", 'for_time_slot']
     filter_horizontal = ['comment']
 
 

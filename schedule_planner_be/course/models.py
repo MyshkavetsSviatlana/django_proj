@@ -168,7 +168,8 @@ class Course(models.Model):
     #     return start_time_options
     #     # return print(lessons)
 
-    start_time_options = models.ForeignKey(ClassroomAvailability, on_delete=models.DO_NOTHING, null=True, default='', blank='')
+    start_time_options = models.ForeignKey(ClassroomAvailability, on_delete=models.DO_NOTHING, null=True, default='',
+                                           blank='')
     # choices = models.CharField("Start time options", max_length=200, default="", null=True, blank=True)
     start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, max_length=9)
     end_time = models.TimeField("End time", null=True, blank=True,
@@ -288,7 +289,7 @@ def create_lessons(sender, instance, **kwargs):
                     if course.lesson_duration == 2:
                         Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
                                               date=dates, start_time=start_time, end_time=end_time,
-                                              is_start_day=True)
+                                              is_end_day=True)
                         start_time_range = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
                                             "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
                         for i in start_time_range:
@@ -299,7 +300,7 @@ def create_lessons(sender, instance, **kwargs):
                     if course.lesson_duration == 3:
                         Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
                                               date=dates, start_time=start_time, end_time=end_time,
-                                              is_start_day=True)
+                                              is_end_day=True)
                         start_time_range = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
                                             "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
                         for i in start_time_range:
@@ -319,7 +320,7 @@ def create_lessons(sender, instance, **kwargs):
                     if course.lesson_duration == 2:
                         Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
                                               date=dates, start_time=start_time, end_time=end_time,
-                                              is_start_day=True)
+                                              is_transit_day_1=True)
                         start_time_range = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
                                             "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
                         for i in start_time_range:
@@ -330,7 +331,7 @@ def create_lessons(sender, instance, **kwargs):
                     if course.lesson_duration == 3:
                         Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
                                               date=dates, start_time=start_time, end_time=end_time,
-                                              is_start_day=True)
+                                              is_transit_day_1=True)
                         start_time_range = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
                                             "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
                         for i in start_time_range:
@@ -350,7 +351,7 @@ def create_lessons(sender, instance, **kwargs):
                     if course.lesson_duration == 2:
                         Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
                                               date=dates, start_time=start_time, end_time=end_time,
-                                              is_start_day=True)
+                                              is_transit_day_2=True)
                         start_time_range = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
                                             "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
                         for i in start_time_range:
@@ -361,7 +362,7 @@ def create_lessons(sender, instance, **kwargs):
                     if course.lesson_duration == 3:
                         Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
                                               date=dates, start_time=start_time, end_time=end_time,
-                                              is_start_day=True)
+                                              is_transit_day_2=True)
                         start_time_range = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
                                             "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
                         for i in start_time_range:
@@ -376,11 +377,10 @@ def create_lessons(sender, instance, **kwargs):
                 if dates in course.all_course_dates[1:len(course.all_course_dates) - 3]:
                     if course.lesson_duration == 1:
                         Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
-                                          date=dates, start_time=start_time, end_time=end_time)
+                                              date=dates, start_time=start_time, end_time=end_time)
                     if course.lesson_duration == 2:
                         Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
-                                              date=dates, start_time=start_time, end_time=end_time,
-                                              is_start_day=True)
+                                              date=dates, start_time=start_time, end_time=end_time)
                         start_time_range = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
                                             "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
                         for i in start_time_range:
@@ -390,8 +390,7 @@ def create_lessons(sender, instance, **kwargs):
                                                       date=dates, start_time=start_time2, for_time_slot=True)
                     if course.lesson_duration == 3:
                         Lesson.objects.create(number=number, course=course, teacher=teacher, location=location,
-                                              date=dates, start_time=start_time, end_time=end_time,
-                                              is_start_day=True)
+                                              date=dates, start_time=start_time, end_time=end_time)
                         start_time_range = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
                                             "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
                         for i in start_time_range:
@@ -463,5 +462,3 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.number} {self.course} {self.topic}"
-
-

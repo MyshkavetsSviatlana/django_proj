@@ -8,10 +8,12 @@ from django.utils.http import urlsafe_base64_decode
 from django.views import generic, View
 from .forms import UserCreationForm, UserAuthenticationForm, MySetPasswordForm
 from .service import send
+
 import pytz
 
 
 utc = pytz.UTC
+
 User = get_user_model()
 
 
@@ -45,6 +47,7 @@ class MyLoginView(LoginView):
 
 class EmailVerify(View):
     """Верификация email"""
+
     def get(self, request, uidb64, token):
         user = self.get_user(uidb64)
         if user is not None and token_generator.check_token(user, token):
@@ -96,4 +99,3 @@ class SignUp(generic.CreateView):
 class MyPasswordResetConfirmView(PasswordResetConfirmView):
     """Сброс пароля"""
     form_class = MySetPasswordForm
-
