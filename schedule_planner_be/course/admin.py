@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Comment, Lesson
+from .models import Course, Comment, Lesson, ClassroomAvailability
 
 
 @admin.register(Course)
@@ -13,8 +13,8 @@ class CourseAdmin(admin.ModelAdmin):
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ["number", "course", "date", "start_time", "topic",
-                    "description", "is_start_day", "is_end_day", "is_transit_day_1",
+    list_display = ["date", "start_time", "number", "course", "topic",
+                    "description", "for_time_slot", "is_start_day", "is_end_day", "is_transit_day_1",
                     "is_transit_day_2"]
     ordering = ["number"]
     search_fields = ["topic"]
@@ -22,6 +22,12 @@ class LessonAdmin(admin.ModelAdmin):
     filter_horizontal = ['comment']
 
 
-# admin.site.register(Course, CourseAdmin)
 admin.site.register(Comment)
 
+
+@admin.register(ClassroomAvailability)
+class ClassroomAvailabilityAdmin(admin.ModelAdmin):
+    list_display = ["date", "classroom", "start_time", "is_free"]
+    ordering = ["date"]
+    search_fields = ["date"]
+    list_filter = ["date", "classroom", "start_time", "is_free"]

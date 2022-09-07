@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth import authenticate, password_validation
+from django.contrib.auth import authenticate
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm, SetPasswordForm
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -10,12 +10,12 @@ from .service import send
 
 class UserAuthenticationForm(AuthenticationForm):
     def clean(self):
-        username = self.cleaned_data.get("username")
+        email = self.cleaned_data.get("email")
         password = self.cleaned_data.get("password")
 
-        if username is not None and password:
+        if email is not None and password:
             self.user_cache = authenticate(
-                self.request, username=username, password=password
+                self.request, email=email, password=password
             )
             if not self.user_cache.email_verify:
                 send(self.request, self.user_cache)
