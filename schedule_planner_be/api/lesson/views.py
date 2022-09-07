@@ -16,7 +16,7 @@ class LessonListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     filter_backends = (DjangoFilterBackend,)
     filterset_class = LessonTeacherFilter
-    queryset = Lesson.objects.all()
+    queryset = Lesson.objects.all().filter(for_time_slot=False)
 
 
 class LessonMorningListView(generics.ListAPIView):
@@ -28,7 +28,7 @@ class LessonMorningListView(generics.ListAPIView):
 
     def get_queryset(self):
         morning_lessons = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]
-        lessons = Lesson.objects.all().filter(start_time__in=morning_lessons)
+        lessons = Lesson.objects.all().filter(for_time_slot=False).filter(start_time__in=morning_lessons)
         return lessons
 
 
@@ -41,7 +41,7 @@ class LessonEveningListView(generics.ListAPIView):
 
     def get_queryset(self):
         evening_lessons = ["17:00", "18:00", "19:00", "20:00", "21:00"]
-        lessons = Lesson.objects.all().filter(start_time__in=evening_lessons)
+        lessons = Lesson.objects.all().filter(for_time_slot=False).filter(start_time__in=evening_lessons)
         return lessons
 
 

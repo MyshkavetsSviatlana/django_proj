@@ -9,25 +9,34 @@ from django.views import generic, View
 from .forms import UserCreationForm, UserAuthenticationForm, MySetPasswordForm
 from .service import send
 
+import pytz
+
+
+utc = pytz.UTC
+
 User = get_user_model()
 
 
 class SendRepeatMessage(View):
-    # template_name = 'registration/send_repeat_message.html'
-
+    """Повторная отправка ссылки для потвеждения регистрации"""
     def get(self, request):
-        email = request.GET.get('email')
+        email = self.request.GET.get('email')
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise ValueError('No user with such email')
-        last_mail = user.last_send_mail
-        delta = datetime.datetime.now() - datetime.timedelta(seconds=60)
-        if delta > last_mail:
-            send(request, user)
-            return redirect('home')
+        last_mail = user.last_send_mail.replace(tzinfo=utc)
+        delta = (datetime.datetime.now() - datetime.timedelta(seconds=60)).replace(tzinfo=utc)
+        if user.email_verify:
+            return redirect('complete_verify_email')
         else:
-            raise ValueError('Wait for 60 seconds to pass')
+            if delta > last_mail:
+                send(request, user)
+                user.last_send_mail = datetime.datetime.now()
+                user.save()
+                return redirect('send_message')
+            else:
+                raise ValueError('Wait for 60 seconds to pass')
 
 
 class MyLoginView(LoginView):
@@ -44,8 +53,8 @@ class EmailVerify(View):
         if user is not None and token_generator.check_token(user, token):
             user.email_verify = True
             user.save()
-            login(request, user)
-            return redirect('home')
+            # login(request, user)
+            return redirect('login')
         return redirect('invalid_verify')
 
     @staticmethod
