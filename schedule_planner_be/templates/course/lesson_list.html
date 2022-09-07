@@ -7,12 +7,14 @@
     <a href="{% url 'lesson_form' %}"> Create new lesson </a>
     <div>
         {% for lesson in object_list %}
-        <a href="{% url 'lesson_detail' lesson.pk %}">
-            <h2>{{ lesson.topic }}
-                {{ lesson.date }}
-                {{ lesson.start_time }}
-            </h2>
-        </a>
+            {% if lesson.for_time_slot is False %}
+            <a href="{% url 'lesson_detail' lesson.pk %}">
+             <h2>{{ lesson.topic }}
+                    {{ lesson.date }}
+                    {{ lesson.start_time }}
+             </h2>
+            </a>
+            {% endif %}
         {% endfor %}
     </div>
     <form action="{% url 'filter' %}" method="get">
