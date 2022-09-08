@@ -1,39 +1,19 @@
 {% extends 'layout/basic.html' %}
 
-{% block title %}Комментарии{% endblock %}
+{% block title %}Comments{% endblock %}
 
 {% block content %}
 
-<h1>Комментарии</h1>
-<a href="{% url 'comment_form' %}"> Создать комментарий </a>
+<h1>All comments</h1>
+<a href="{% url 'comment_form' %}">Create</a>
 {% if comment_list %}
     {% for comment in comment_list %}
     <div>
-        <p>{{comment.id}} - course: {{comment.course}} <a href="{% url 'comment_detail' comment.id %}">{{comment.body}}</a></p>
+        <p>{{comment.id}} - course: {{comment.course}} <a href="{% url 'comment_detail' comment.pk %}">{{comment.body}}</a></p>
         <p>{{ course.start_day }}</p>
     </div>
     {% endfor %}
 {% else %}
-    <p>Комментарии пока отсутствуют.</p>
+    <p>Comment doesn't exists.</p>
 {% endif %}
 {% endblock %}
-
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Django Schedule</title>
-</head>
-<body>
-    <h1> List of comments </h1>
-    <a href="{% url 'comment_form' %}"> Create new comment </a>
-    <div>
-        {% for comment in object_list %}
-        <h2> </h2>
-        {% endfor %}
-    </div>
-</body>
-</html>

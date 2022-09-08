@@ -47,8 +47,8 @@
                     </td>
                     <td>
                         <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'course_detail' course.pk %}">View</a></button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'course_edit' course.url %}">Edit</a></button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'course_confirm_delete' course.url %}">Delete</a></button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'course_edit' course.pk %}">Edit</a></button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'course_confirm_delete' course.pk %}">Delete</a></button>
                     </td>
                 </tr>
             </tbody>
