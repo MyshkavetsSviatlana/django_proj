@@ -26,6 +26,7 @@ class SendRepeatMessage(View):
         except User.DoesNotExist:
             raise ValueError('No user with such email')
         last_mail = user.last_send_mail.replace(tzinfo=utc)
+        print(last_mail)
         delta = (datetime.datetime.now() - datetime.timedelta(seconds=60)).replace(tzinfo=utc)
         if user.email_verify:
             return redirect('complete_verify_email')
