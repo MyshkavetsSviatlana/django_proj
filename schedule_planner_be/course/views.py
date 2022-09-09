@@ -39,6 +39,9 @@ class CourseUpdateView(UpdateView):
     template_name = 'course/course_edit.html'
     fields = '__all__'
 
+    def get_success_url(self):
+        return reverse_lazy('course_detail', args=(self.object.id,))
+
 
 class CourseDeleteView(DeleteView):
     """Удаление курса"""

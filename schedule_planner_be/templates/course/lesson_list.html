@@ -65,25 +65,27 @@
                 </tr>
             </thead>
             {% for lesson in lesson_list %}
-            <tbody>
-                <tr>
-                    <td>{{ lesson.number }}</td>
-                    <td>{{ lesson.course }}</td>
-                    <td>{{ lesson.teacher }}</td>
-                    <td>{{ lesson.topic }}</td>
-                    <td>{{ lesson.date }}</td>
-                    <td>{{ lesson.start_time }}</td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'comment_form' %}">Add comment</a></button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'comments_by_lesson' lesson.pk %}">View comments</a></button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_detail' lesson.pk %}">View</a></button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_edit' lesson.pk %}">Edit</a></button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_confirm_delete' lesson.pk %}">Delete</a></button>
-                    </td>
-                </tr>
-            </tbody>
+                {% if not lesson_list.for_time_slot %}
+                <tbody>
+                    <tr>
+                        <td>{{ lesson.number }}</td>
+                        <td>{{ lesson.course }}</td>
+                        <td>{{ lesson.teacher }}</td>
+                        <td>{{ lesson.topic }}</td>
+                        <td>{{ lesson.date }}</td>
+                        <td>{{ lesson.start_time }}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'comment_form' %}">Add comment</a></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'comments_by_lesson' lesson.pk %}">View comments</a></button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_detail' lesson.pk %}">View</a></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_edit' lesson.pk %}">Edit</a></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_confirm_delete' lesson.pk %}">Delete</a></button>
+                        </td>
+                    </tr>
+                </tbody>
+                {% endif %}
             {% endfor %}
         </table>
     </div>
