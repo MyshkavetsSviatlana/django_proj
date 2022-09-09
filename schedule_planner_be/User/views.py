@@ -41,6 +41,7 @@ class MyLoginView(LoginView):
     """Логин"""
     form_class = UserAuthenticationForm
     template_name = 'registration/login.html'
+    success_url = "/courses/lesson/"
 
 
 class EmailVerify(View):
@@ -76,7 +77,7 @@ class SignUp(generic.CreateView):
     """Регистрация"""
     form_class = UserCreationForm
     template_name = 'User/signup.html'
-    success_url = "/schedule/schedules/"
+    success_url = "/courses/lesson/"
 
     def post(self, request, *args, **kwargs):
         form = UserCreationForm(request.POST)

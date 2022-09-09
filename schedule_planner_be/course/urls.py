@@ -27,7 +27,6 @@ urlpatterns = [
     path('lesson/<int:pk>/delete/', LessonDeleteView.as_view(), name='lesson_confirm_delete'),
     path('lesson/export/lessons-list/', views.csv_lessons_list_write, name='csv_lessons_list_write'),
     path('course-lessons/<int:pk>/', course_by_lessons, name='course_by_lessons'),
-    path('schedule', LessonListView.as_view(), name='lesson_list'),
     path('schedule/<int:pk>/', comments_by_lesson, name='comments_by_lesson'),
     path('comments/<int:pk>/', comments_by_course, name='comments_by_course'),
 ]

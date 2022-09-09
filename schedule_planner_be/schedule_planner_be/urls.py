@@ -15,10 +15,6 @@ urlpatterns = [
     path('user/', include('django.contrib.auth.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('api/v1/', include('api.urls')),
-]
-
-
-urlpatterns += [
     path("schedule/", include('schedule.urls')),
 ]
 

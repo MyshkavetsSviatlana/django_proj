@@ -87,7 +87,7 @@ def csv_lessons_list_write(request):
                      'Дата занятия', 'Время занятия'])
 
     for lesson in lessons:
-        writer.writerow([lesson.number, lesson.course, lesson.teacher, lesson.topic, lesson.description,
+        writer.writerow([lesson.number, lesson.course.course_name, lesson.teacher, lesson.topic, lesson.description,
                          lesson.date, lesson.start_time])
 
     return response
