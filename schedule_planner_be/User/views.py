@@ -8,12 +8,10 @@ from django.utils.http import urlsafe_base64_decode
 from django.views import generic, View
 from .forms import UserCreationForm, UserAuthenticationForm, MySetPasswordForm
 from .service import send
-
 import pytz
 
 
 utc = pytz.UTC
-
 User = get_user_model()
 
 
@@ -25,12 +23,12 @@ class SendRepeatMessage(View):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise ValueError('No user with such email')
-        last_mail = user.last_send_mail.replace(tzinfo=utc)
-        delta = (datetime.datetime.now() - datetime.timedelta(seconds=60)).replace(tzinfo=utc)
+        last_mail = user.last_send_mail.replace(tzinfo=utc) + datetime.timedelta(hours=3)
+        now = (datetime.datetime.now() - datetime.timedelta(minutes=1)).replace(tzinfo=utc)
         if user.email_verify:
             return redirect('complete_verify_email')
         else:
-            if delta > last_mail:
+            if now > last_mail:
                 send(request, user)
                 user.last_send_mail = datetime.datetime.now()
                 user.save()

@@ -21,7 +21,7 @@ from User.models import User
 
 class ClassroomAvailability(models.Model):
     date = models.DateField()
-    classroom = models.ForeignKey('schedule.Classroom', on_delete=models.CASCADE)
+    classroom = models.CharField('Аудитория', max_length=100)
     start_time = models.CharField('Время начала занятия', max_length=5)
     is_free = models.BooleanField(default=True)
 
@@ -168,8 +168,8 @@ class Course(models.Model):
     #     return start_time_options
     #     # return print(lessons)
 
-    start_time_options = models.ForeignKey(ClassroomAvailability, on_delete=models.DO_NOTHING, null=True, default='',
-                                           blank='')
+    start_time_options = models.ForeignKey(ClassroomAvailability, on_delete=models.SET_NULL, null=True, default='',
+                                           blank=True)
     # choices = models.CharField("Start time options", max_length=200, default="", null=True, blank=True)
     start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, max_length=9)
     end_time = models.TimeField("End time", null=True, blank=True,
@@ -407,10 +407,9 @@ def create_lessons(sender, instance, **kwargs):
 
 class Comment(models.Model):
     """Creates model Comment"""
-    # lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, default='1')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, default='1')
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default='')
-    body = models.TextField(max_length=2024)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default='')
+    body = models.CharField(max_length=50)
     created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
@@ -457,6 +456,7 @@ class Lesson(models.Model):
     is_transit_day_2 = models.BooleanField(default=False, blank=True)
     created_by = CurrentUserField()
     for_time_slot = models.BooleanField(default=False, blank=True)
+    was_held = models.BooleanField(default=True, blank=True)
 
     class Meta:
         verbose_name = "Занятие"

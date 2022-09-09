@@ -2,7 +2,7 @@ from datetime import time, datetime, timedelta, date
 # import pytz
 
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 # from django_agenda.models import AbstractTimeSlot, AbstractAvailabilityOccurrence, AbstractAvailability, AbstractBooking
@@ -30,7 +30,7 @@ class Location(models.Model):
     city = models.CharField('City', max_length=50)
     street = models.CharField('Street', max_length=50)
     building = models.CharField('Building', max_length=10, default=None)
-    subway = models.ForeignKey(SubwayStation, on_delete=models.DO_NOTHING, verbose_name='Станции метро')
+    subway = models.ForeignKey(SubwayStation, on_delete=models.SET_NULL, null=True, verbose_name='Станции метро')
 
     def __str__(self):
         return f"{self.street}, {self.building}, {self.subway}, {self.city}"
@@ -43,7 +43,7 @@ class Location(models.Model):
 class Classroom(models.Model):
     """Creates model Classroom"""
     classroom = models.CharField('Classroom', max_length=10)
-    location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
     seats_number = models.PositiveSmallIntegerField("Number of seats")
     pc_number = models.PositiveSmallIntegerField("Number of PCs")
 
@@ -94,7 +94,7 @@ class Classroom(models.Model):
 #         # we only reserve the time if the reservation has been approved
 #         if self.approved:
 #             yield TimeSpan(self.start_time, self.end_time)
-#
+
 
 # @receiver(post_save, sender=Classroom)
 # def classroom_availability(sender, instance, **kwargs):
@@ -155,7 +155,7 @@ class Schedule(models.Model):
 @receiver(post_save, sender=Classroom)
 def classroom_availability(sender, instance, **kwargs):
     start_range_date = date(2022, 9, 7)
-    number_of_days = 90
+    number_of_days = 30
     date_list = []
     for day in range(number_of_days):
         a_date = (start_range_date + timedelta(days=day)).isoformat()
@@ -178,9 +178,18 @@ def reserve_classroom(sender, instance, **kwargs):
     lesson = instance
     date = lesson.date
     classroom = lesson.location
+    print(classroom)
     start_time = lesson.start_time
     slot = ClassroomAvailability.objects.filter(date=date, classroom=classroom, start_time=start_time)
+    print(slot)
     slot.update(is_free=False)
+    print(slot)
+
+
+@receiver(post_save, sender=Lesson)
+def delete_old_classroomavailabilities(sender, instance, **kwargs):
+    today = date.today()
+    ClassroomAvailability.objects.filter(date__lt=today).delete()
 
 
 @receiver(post_delete, sender=Lesson)
@@ -191,6 +200,16 @@ def reserve_classroom(sender, instance, **kwargs):
     start_time = lesson.start_time
     slot = ClassroomAvailability.objects.filter(date=date, classroom=classroom, start_time=start_time)
     slot.update(is_free=True)
+
+
+@receiver(post_delete, sender=Classroom)
+def delete_classroomavailibility(sender, instance, **kwargs):
+    classroom = instance
+    location = classroom.location
+    classroom = classroom.classroom
+    address = f'ауд. {classroom}, {location}'
+    ClassroomAvailability.objects.filter(classroom=address).delete()
+
 
 # @receiver(post_save, sender=Lesson)
 # def create_classroomreservation(sender, instance, **kwargs):
@@ -213,5 +232,5 @@ def reserve_classroom(sender, instance, **kwargs):
 #         end_time=datetime(year=year, month=month, day=day, hour=end_hour, tzinfo=tz),
 #     )
 #     print(reservation, type(reservation))
-# reservation.clean()
-# reservation.save()
+#     reservation.clean()
+#     reservation.save()

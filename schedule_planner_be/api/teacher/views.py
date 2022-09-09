@@ -1,6 +1,5 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-
 from .serializers import *
 from Teacher.models import Teacher
 from .permissions import TeacherPermissionsMixin
