@@ -99,6 +99,7 @@ class CommentDetailView(DetailView):
 
 class GetValuesFoFilters:
     """Получение всех полей фильтрации"""
+
     def get_teacher(self):
         return Teacher.objects.filter(is_active=True).values('surname')
 
@@ -135,6 +136,7 @@ class LessonListView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     #     context['lesson_list'] = Lesson.objects.all().filter(for_time_slot=False)
     #     context['comments'] = Comment.objects.all()
     #     return context
+
 
 class LessonMorningListView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     """Вывод утренних занятий"""
@@ -199,7 +201,7 @@ class FilterLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
             queryset = Lesson.objects.all().filter(for_time_slot=False).filter(
                 Q(teacher__surname__in=self.request.GET.getlist("surname")) &
                 Q(course__course_name__in=self.request.GET.getlist("course_name"))
-                )
+            )
             return queryset
         else:
             queryset = Lesson.objects.all().filter(for_time_slot=False).filter(
@@ -323,7 +325,7 @@ class FilterEveningLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
                 Q(course__course_name__in=course_name) &
                 Q(course__location__location__street__in=location) &
                 Q(date__range=(start, end))
-                )
+            )
             return queryset
         elif surname and course_name and location:
             queryset = Lesson.objects.all().filter(for_time_slot=False).filter(start_time__in=evening_lessons).filter(
@@ -353,41 +355,41 @@ class FilterEveningLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
                 Q(date__range=(start, end))
             )
             return queryset
-        elif surname and course_name :
+        elif surname and course_name:
             queryset = Lesson.objects.all().filter(for_time_slot=False).filter(start_time__in=evening_lessons).filter(
                 Q(teacher__surname__in=surname) &
                 Q(course__course_name__in=course_name)
-                )
+            )
             return queryset
         elif surname and location:
             queryset = Lesson.objects.all().filter(for_time_slot=False).filter(start_time__in=evening_lessons).filter(
                 Q(teacher__surname__in=surname) &
                 Q(course__location__location__street__in=location)
-                )
+            )
             return queryset
         elif surname and start and end:
             queryset = Lesson.objects.all().filter(for_time_slot=False).filter(start_time__in=evening_lessons).filter(
                 Q(teacher__surname__in=surname) &
                 Q(date__range=(start, end))
-                )
+            )
             return queryset
-        elif course_name and location :
+        elif course_name and location:
             queryset = Lesson.objects.all().filter(for_time_slot=False).filter(start_time__in=evening_lessons).filter(
                 Q(course__course_name__in=course_name) &
                 Q(course__location__location__street__in=location)
-                )
+            )
             return queryset
         elif course_name and start and end:
             queryset = Lesson.objects.all().filter(for_time_slot=False).filter(start_time__in=evening_lessons).filter(
                 Q(course__course_name__in=course_name) &
                 Q(date__range=(start, end))
-                )
+            )
             return queryset
         elif location and start and end:
             queryset = Lesson.objects.all().filter(for_time_slot=False).filter(start_time__in=evening_lessons).filter(
                 Q(course__location__location__street__in=location) &
                 Q(date__range=(start, end))
-                )
+            )
             return queryset
         elif start and end:
             queryset = Lesson.objects.all().filter(for_time_slot=False).filter(start_time__in=evening_lessons).filter(
@@ -399,7 +401,7 @@ class FilterEveningLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
                 Q(teacher__surname__in=surname) |
                 Q(course__course_name__in=course_name) |
                 Q(course__location__location__street__in=location)
-                )
+            )
             return queryset
 
 
@@ -424,15 +426,14 @@ def csv_courses_list_write(request):
 
 def csv_lessons_list_write(request):
     """""Create a CSV file with teachers list"""
-    # Get all data from Teacher Database Table
-    lessons = Lesson.objects.all()
-
+    # Get all data from Lesson Database Table
+    lessons = Lesson.objects.filter(for_time_slot=False)
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="lessons_list.csv"'
     response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response, delimiter=';', dialect='excel')
-    writer.writerow(['Номер занятия в курсе', 'Название курса', 'Преподаватель', 'Тема занятия', 'Краткое описание',
+    writer.writerow(['Номер занятия в курсе', 'Курс', 'Преподаватель', 'Тема занятия', 'Краткое описание',
                      'Дата занятия', 'Время занятия', 'Комментарий'])
 
     for lesson in lessons:

@@ -1,4 +1,5 @@
 from datetime import time, datetime, timedelta, date
+import time
 # import pytz
 
 from django.db import models
@@ -9,7 +10,10 @@ from django.urls import reverse
 # from django_agenda.time_span import TimeSpan
 
 # from User.models import User
+from User.models import User
 from course.models import Course, Comment, Lesson, ClassroomAvailability
+
+
 # from schedule_planner_be import settings
 
 
@@ -154,8 +158,8 @@ class Schedule(models.Model):
 
 @receiver(post_save, sender=Classroom)
 def classroom_availability(sender, instance, **kwargs):
-    start_range_date = date(2022, 9, 7)
-    number_of_days = 30
+    start_range_date = date(2022, 9, 1)
+    number_of_days = 90
     date_list = []
     for day in range(number_of_days):
         a_date = (start_range_date + timedelta(days=day)).isoformat()
@@ -193,7 +197,7 @@ def delete_old_classroomavailabilities(sender, instance, **kwargs):
 
 
 @receiver(post_delete, sender=Lesson)
-def reserve_classroom(sender, instance, **kwargs):
+def make_classroomavailability_free(sender, instance, **kwargs):
     lesson = instance
     date = lesson.date
     classroom = lesson.location
@@ -209,7 +213,6 @@ def delete_classroomavailibility(sender, instance, **kwargs):
     classroom = classroom.classroom
     address = f'ауд. {classroom}, {location}'
     ClassroomAvailability.objects.filter(classroom=address).delete()
-
 
 # @receiver(post_save, sender=Lesson)
 # def create_classroomreservation(sender, instance, **kwargs):
@@ -234,3 +237,25 @@ def delete_classroomavailibility(sender, instance, **kwargs):
 #     print(reservation, type(reservation))
 #     reservation.clean()
 #     reservation.save()
+
+
+# def update():
+#     while True:
+#         now = datetime.now()
+#         td = timedelta(days=1)
+#         date = now + td
+#         if now.hour == 10 and now.minute == 34:
+#             all_classrooms = [classroom for classroom in Classroom.objects.all()]
+#             print(all_classrooms)
+#             for classroom in all_classrooms:
+#                 start_time_range = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
+#                                     "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
+#                 for start_time_option in start_time_range:
+#                     ClassroomAvailability.objects.create(
+#                         classroom=classroom,
+#                         date=date,
+#                         start_time=start_time_option,
+#                     )
+#             time.sleep(24 * 60 * 60 - 120)
+#         else:
+#             time.sleep(15)
