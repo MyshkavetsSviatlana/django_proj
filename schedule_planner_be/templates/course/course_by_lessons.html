@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1>Current Course :: {{ current_course.course_name }}</h1>
+    <h1>Current Course : {{ current_course.course_name }}</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group me-2">
             <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_form' %}">Create lesson</a></button>
@@ -27,7 +27,8 @@
                 </tr>
             </thead>
             {% for lesson in lesson_list %}
-            <tbody>
+                {% if not lesson.for_time_slot %}
+                <tbody>
                 <tr>
                     <td>{{ lesson.number }}</td>
                     <td>{{ lesson.course }}</td>
@@ -36,16 +37,22 @@
                     <td>{{ lesson.date }}</td>
                     <td>{{ lesson.start_time }}</td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'comment_form' %}">Add comment</a></button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'comments_by_lesson' lesson.pk %}">View comments</a></button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'comment_form' %}">Add
+                            comment</a></button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"><a
+                            href="{% url 'comments_by_lesson' lesson.pk %}">View comments</a></button>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_detail' lesson.pk %}">View</a></button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_edit' lesson.pk %}">Edit</a></button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_confirm_delete' lesson.pk %}">Delete</a></button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"><a
+                            href="{% url 'lesson_detail' lesson.pk %}">View</a></button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"><a
+                            href="{% url 'lesson_edit' lesson.pk %}">Edit</a></button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"><a
+                            href="{% url 'lesson_confirm_delete' lesson.pk %}">Delete</a></button>
                     </td>
                 </tr>
-            </tbody>
+                </tbody>
+                {% endif %}
             {% endfor %}
         </table>
     </div>

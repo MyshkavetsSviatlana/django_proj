@@ -2,15 +2,12 @@ import itertools
 from datetime import date, time, datetime
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-from django.utils.text import slugify
 from django_currentuser.middleware import (
     get_current_user, get_current_authenticated_user)
 from django_currentuser.db.models import CurrentUserField
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.urls import reverse
 from datetime import timedelta
-from audioop import reverse
 from django.db import models
 from django.utils.datetime_safe import date
 from django.core.validators import MaxValueValidator
@@ -205,7 +202,7 @@ class Course(models.Model):
     is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
-        self.start_day_of_week = self.start_date.isoweekday()
+        self.start_day_of_week = self.start_day_isoweekday
         self.course_type = self.find_course_type
         # self.choices = self.start_time_options
         self.all_course_dates = self.all_course_days
@@ -215,23 +212,19 @@ class Course(models.Model):
     def __str__(self):
         return f"{self.course_name}, {self.start_date}, {self.start_time}, {self.location}"
 
-    def get_absolute_url(self):
-        return reverse('course_detail', kwargs={'slug': self.url})
-
     class Meta:
         verbose_name = "Курс"
         verbose_name_plural = "Курсы"
         unique_together = ('start_date', 'location', 'start_time')
 
 
-# @receiver(pre_save, sender=Course)
-# def validate_days_of_week(sender, instance, **kwargs):
-#     course = instance
-#     if course.start_day_of_week not in course.days_of_week:
-#         raise ValidationError(
-#             _('%(course.start_day_of_week)s does not contain start day of week'),
-#             params={'course.start_day_of_week': course.start_day_of_week},
-#         )
+@receiver(post_save, sender=Course)
+def validate_days_of_week(sender, instance, **kwargs):
+    course = instance
+    if str(course.start_date.isoweekday()) not in course.days_of_week:
+        raise ValidationError(
+            _('Chosen days of week do not include start day of week'),
+        )
 
 
 @receiver(post_save, sender=Course)
@@ -407,7 +400,7 @@ def create_lessons(sender, instance, **kwargs):
 
 class Comment(models.Model):
     """Creates model Comment"""
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, default='1')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, default='')
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default='')
     body = models.CharField(max_length=50)
     created = models.DateTimeField(auto_now_add=True)
