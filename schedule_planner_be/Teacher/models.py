@@ -109,7 +109,7 @@ class Teacher(models.Model):
     course_name = MultiSelectField(_("Course name"), choices=COURSE_NAME, max_choices=7,
                                     max_length=60, default=None, blank=True)
     phone = models.CharField(_('Phone'), max_length=25, blank=True)
-    image = models.ImageField(_("Photo"), upload_to="Teachers/", blank=True)
+    image = models.ImageField(_("Photo"), upload_to='uploads/% Y/% m/% d/', blank=True)
     is_active = models.BooleanField(_('Status'), default=True)
 
     def __str__(self):

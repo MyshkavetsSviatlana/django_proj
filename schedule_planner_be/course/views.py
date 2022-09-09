@@ -1,7 +1,7 @@
 import csv
 import datetime
-
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
 from django.http import HttpResponse
 from .models import Course, Comment, Lesson
@@ -9,7 +9,8 @@ from Teacher.models import Teacher
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .permissions import LessonPermissionsMixin
-from .forms import LessonForm
+from .forms import LessonForm, CommentForm
+from django.urls import reverse_lazy
 
 
 class CourseListView(ListView):
@@ -22,7 +23,6 @@ class CourseDetailView(DetailView):
     """Вывод полного описания курса"""
     model = Course
     template_name = 'course/course_detail.html'
-    slug_field = 'url'
 
 
 class CourseCreateView(CreateView):
@@ -38,8 +38,6 @@ class CourseUpdateView(UpdateView):
     model = Course
     template_name = 'course/course_edit.html'
     fields = '__all__'
-    success_url = "/"
-    slug_field = 'url'
 
 
 class CourseDeleteView(DeleteView):
@@ -48,7 +46,6 @@ class CourseDeleteView(DeleteView):
     template_name = 'course/course_confirm_delete.html'
     fields = '__all__'
     success_url = "/"
-    slug_field = 'url'
 
 
 class CommentListView(ListView):
@@ -59,33 +56,41 @@ class CommentListView(ListView):
 
 class CommentCreateView(CreateView):
     """Создание нового комментария"""
-    model = Comment
     template_name = 'course/comment_form.html'
-    fields = '__all__'
-    success_url = "/"
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse_lazy('comment_detail', args=(self.object.id,))
 
 
-class CommentDeleteView(DeleteView):
+class CommentDeleteView(UserPassesTestMixin, DeleteView):
     """Удаление комментария"""
-    model = Comment
     template_name = 'course/comment_confirm_delete.html'
-    fields = '__all__'
-    success_url = "/"
-    slug_field = 'url'
+    model = Comment
+    success_url = reverse_lazy('comment_list')
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
 
 
-class CommentUpdateView(UpdateView):
+class CommentUpdateView(UserPassesTestMixin, UpdateView):
     """Изменение курса"""
     model = Comment
     template_name = 'course/comment_edit.html'
-    fields = '__all__'
-    success_url = "/"
-    slug_field = 'url'
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse_lazy('comment_detail', args=(self.object.id,))
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
 
 
 class CommentDetailView(DetailView):
     """Вывод полного описания курса"""
-    model = Course
+    model = Comment
     template_name = 'course/comment_detail.html'
 
 
@@ -115,13 +120,18 @@ class GetValuesFoFilters:
 
 class LessonListView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     """Вывод списка занятий"""
-    model = Lesson
+    model = Lesson, Comment
     template_name = 'course/lesson_list.html'
 
     def get_queryset(self):
         queryset = Lesson.objects.all().filter(for_time_slot=False)
         return queryset
 
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['lesson_list'] = Lesson.objects.all().filter(for_time_slot=False)
+    #     context['comments'] = Comment.objects.all()
+    #     return context
 
 class LessonMorningListView(LoginRequiredMixin, GetValuesFoFilters, ListView):
     """Вывод утренних занятий"""
@@ -427,3 +437,24 @@ def csv_lessons_list_write(request):
                          lesson.date, lesson.start_time, lesson.comment])
 
     return response
+
+
+def course_by_lessons(request, pk):
+    lesson_list = Lesson.objects.filter(course=pk)
+    current_course = Course.objects.get(pk=pk)
+    context = {'lesson_list': lesson_list, 'current_course': current_course}
+    return render(request, 'course/course_by_lessons.html', context)
+
+
+def comments_by_lesson(request, pk):
+    comment_list = Comment.objects.filter(lesson=pk)
+    current_lesson = Lesson.objects.get(pk=pk)
+    context = {'comment_list': comment_list, 'current_lesson': current_lesson}
+    return render(request, 'course/comments_by_lesson.html', context)
+
+
+def comments_by_course(request, pk):
+    comment_list = Comment.objects.filter(course=pk)
+    current_course = Course.objects.get(pk=pk)
+    context = {'comment_list': comment_list, 'current_course': current_course}
+    return render(request, 'course/comments_by_lesson.html', context)

@@ -7,6 +7,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .forms import TeacherForm
 from .permissions import TeacherPermissionsMixin
+from django.urls import reverse_lazy
 
 
 class TeacherListView(LoginRequiredMixin, ListView):
@@ -31,10 +32,11 @@ class TeacherDetailView(LoginRequiredMixin, DetailView):
 
 class TeacherCreateView(LoginRequiredMixin, TeacherPermissionsMixin, CreateView):
     """Создание нового учителя"""
-    model = Teacher
     template_name = 'Teacher/teacher_form.html'
     form_class = TeacherForm
-    success_url = "/teachers/"
+
+    def get_success_url(self):
+        return reverse_lazy('teacher_detail', args=(self.object.id,))
 
     def get_queryset(self):
         teachers = Teacher.objects.filter(is_active=True)
@@ -43,10 +45,11 @@ class TeacherCreateView(LoginRequiredMixin, TeacherPermissionsMixin, CreateView)
 
 class TeacherUpdateView(LoginRequiredMixin, TeacherPermissionsMixin, UpdateView):
     """Изменение учителей"""
-    model = Teacher
     template_name = 'Teacher/teacher_edit.html'
-    fields = ['surname', 'name', 'fathers_name', 'specialization', 'course_name']
-    success_url = "/teachers/"
+    form_class = TeacherForm
+
+    def get_success_url(self):
+        return reverse_lazy('teacher_detail', args=(self.object.id,))
 
     def get_queryset(self):
         teachers = Teacher.objects.filter(is_active=True)

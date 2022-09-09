@@ -7,6 +7,6 @@
     <div>
         <h2>course name: {{ comment.course }}, comment: {{ comment.body }}</h2>
     </div>
-    <p><a href="{% url 'comment_edit' comment.url %}">Править комментарий</a></p>
-    <p><a href="{% url 'comment_confirm_delete' comment.url %}">Удалить комментарий</a></p>
+    <p><a href="{% url 'comment_edit' comment.pk %}">Править комментарий</a></p>
+    <p><a href="{% url 'comment_confirm_delete' comment.pk %}">Удалить комментарий</a></p>
 {% endblock %}

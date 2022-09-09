@@ -407,6 +407,7 @@ def create_lessons(sender, instance, **kwargs):
 
 class Comment(models.Model):
     """Creates model Comment"""
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, default='1')
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default='')
     body = models.CharField(max_length=50)
     created = models.DateTimeField(auto_now_add=True)
@@ -415,6 +416,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = "Комментарий"
         verbose_name_plural = "Комментарии"
+        ordering = ['-created']
 
     def __str__(self):
         return f'{self.body}'

@@ -16,6 +16,6 @@
         <p>course type: {{ course.course_type}}</p>
         <p>all course dates: {{ course.all_course_days}}</p>
     </div>
-    <p><a href="{% url 'course_edit' course.url %}">Править курс</a></p>
-    <p><a href="{% url 'course_confirm_delete' course.url %}">Удалить курс</a></p>
+    <p><a href="{% url 'course_edit' course.pk %}">Править курс</a></p>
+    <p><a href="{% url 'course_confirm_delete' course.pk %}">Удалить курс</a></p>
 {% endblock %}

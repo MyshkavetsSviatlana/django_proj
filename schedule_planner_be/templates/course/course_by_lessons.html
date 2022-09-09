@@ -1,53 +1,15 @@
 {% extends 'layout/basic.html' %}
 
-{% block title %}Список курсов{% endblock %}
+{% block title %}{{ current_course.course_name }} :: Current Course{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">List of lessons</h1>
+    <h1>Current Course :: {{ current_course.course_name }}</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group me-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_morning_list' %}">Morning schedule</a></button>
-            <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_evening_list' %}">Evening schedule</a></button>
-        </div>
         <div class="btn-group me-2">
             <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'lesson_form' %}">Create lesson</a></button>
         </div>
-        <div class="btn-group me-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'csv_lessons_list_write' %}">Export</a></button>
-        </div>
     </div>
-</div>
-<div>
-    <form action="{% url 'filter' %}" method="get">
-    <div class="row align-items-md-stretch">
-        <div class="col-md-2">
-        <h4 class="sear-head editContent">Course</h4>
-        <ul class="w3layouts-box-list">
-            {% for course in view.get_course %}
-            <li class="editContent">
-                <input type="checkbox" class="checked" name="course_name" value="{{ course.course_name }}">
-                <span class="span editContent">{{ course.course_name }}</span>
-            </li>
-            {% endfor %}
-        </ul>
-        </div>
-        <div class="col-md-2">
-        <h4 class="sear-head editContent">Teacher</h4>
-        <ul class="w3layouts-box-list">
-            {% for teacher in view.get_teacher %}
-            <li class="editContent">
-                <input type="checkbox" class="checked" name="surname" value="{{ teacher.surname }}">
-                <span class="span editContent">{{ teacher.surname }}</span>
-            </li>
-            {% endfor %}
-        </ul>
-        </div>
-        <div class="col-md-2">
-            <button type="submit"> Find </button>
-        </div>
-    </div>
-    </form>
 </div>
 {% if lesson_list %}
     <div class="table-responsive">
@@ -88,6 +50,6 @@
         </table>
     </div>
 {% else %}
-    <p>Schedule doesn't exists.</p>
+    <p>Курсы пока отсутствуют.</p>
 {% endif %}
 {% endblock %}
