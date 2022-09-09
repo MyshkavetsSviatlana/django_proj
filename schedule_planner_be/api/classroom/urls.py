@@ -21,12 +21,8 @@ classroom_detail = ClassroomViewSet.as_view({
     'patch': 'partial_update',
     'delete': 'destroy'
 })
-classroom_highlight = ClassroomViewSet.as_view({
-    'get': 'highlight'
-}, renderer_classes=[renderers.StaticHTMLRenderer])
 
 urlpatterns = [
     path('', classroom_list, name='classroom-list'),
     path('<int:pk>/', classroom_detail, name='classroom-detail'),
-    path('<int:pk>/highlight/', classroom_highlight, name='classroom-highlight'),
 ]

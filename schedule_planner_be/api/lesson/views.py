@@ -76,7 +76,7 @@ class LessonDeleteView(generics.DestroyAPIView):
 def csv_lessons_list_write(request):
     """""Create a CSV file with teachers list"""
     # Get all data from Teacher Database Table
-    lessons = Lesson.objects.all()
+    lessons = Lesson.objects.filter(for_time_slot=False)
 
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='text/csv')

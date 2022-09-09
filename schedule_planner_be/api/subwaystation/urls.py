@@ -12,12 +12,8 @@ subwaystation_detail = SubwayStationViewSet.as_view({
     'patch': 'partial_update',
     'delete': 'destroy'
 })
-subwaystation_highlight = SubwayStationViewSet.as_view({
-    'get': 'highlight'
-}, renderer_classes=[renderers.StaticHTMLRenderer])
 
 urlpatterns = [
     path('', subwaystation_list, name='subwaystation-list'),
     path('<int:pk>/', subwaystation_detail, name='subwaystation-detail'),
-    path('<int:pk>/highlight/', subwaystation_highlight, name='subwaystation-highlight'),
 ]

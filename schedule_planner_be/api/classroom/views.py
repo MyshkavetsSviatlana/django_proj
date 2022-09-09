@@ -28,12 +28,5 @@ class ClassroomViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated & ClassroomPermissionsMixin]
         return [permission() for permission in permission_classes]
 
-    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
-    def highlight(self, request, *args, **kwargs):
-        snippet = self.get_object()
-        return Response(snippet.highlighted)
-
-    # def perform_create(self, serializer):
-    #     serializer.save(owner=self.request.user)
 
 
