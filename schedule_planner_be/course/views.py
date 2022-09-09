@@ -30,7 +30,7 @@ class CourseCreateView(CreateView):
     model = Course
     template_name = 'course/course_form.html'
     fields = '__all__'
-    success_url = "/"
+    success_url = reverse_lazy('course_list')
 
 
 class CourseUpdateView(UpdateView):
@@ -48,7 +48,7 @@ class CourseDeleteView(DeleteView):
     model = Course
     template_name = 'course/course_confirm_delete.html'
     fields = '__all__'
-    success_url = "/"
+    success_url = reverse_lazy('course_list')
 
 
 class CommentListView(ListView):
@@ -437,7 +437,7 @@ def csv_lessons_list_write(request):
                      'Дата занятия', 'Время занятия', 'Комментарий'])
 
     for lesson in lessons:
-        writer.writerow([lesson.number, lesson.course, lesson.teacher, lesson.topic, lesson.description,
+        writer.writerow([lesson.number, lesson.course.course_name, lesson.teacher, lesson.topic, lesson.description,
                          lesson.date, lesson.start_time, lesson.comment])
 
     return response
