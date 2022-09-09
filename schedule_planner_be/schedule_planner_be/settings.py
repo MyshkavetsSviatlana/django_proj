@@ -136,14 +136,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-#Отправка писем в консоль
+# Отправка писем в консоль
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# smtp отправка уведомлений о подписке на рассылку
+# Отправка сообщений на почту
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_USE_TLS = True
 # EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = 'ag.charniauskaya@gmail.com'
-# EMAIL_HOST_PASSWORD = 'zuzqanzlaenlszbl'
+# EMAIL_HOST_USER = 'enter your gmail account'
+# EMAIL_HOST_PASSWORD = 'enter your password'
 # EMAIL_PORT = 587
 
 LOGIN_REDIRECT_URL = '/schedule/schedules/'
@@ -160,7 +160,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-
     ),
 }
 
