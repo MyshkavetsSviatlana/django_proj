@@ -17,11 +17,8 @@
             <thead>
                 <tr>
                     <th scope="col">Full name</th>
-                    <th scope="col">Age</th>
-                    <th scope="col">Start date of teaching</th>
-                    <th scope="col">Quantity of teaching groups</th>
                     <th scope="col">Specialization</th>
-                    <th scope="col">Phone</th>
+                    <th scope="col">Teaching course</th>
                     <th scope="col">Teacher Profile</th>
                 </tr>
             </thead>
@@ -29,11 +26,8 @@
             <tbody>
                 <tr>
                     <td>{{ teacher }} {{ teacher.fathers_name }}</td>
-                    <td>{{ teacher.age }}</td>
-                    <td>{{ teacher.start_date }}</td>
-                    <td>{{ teacher.group_count }}</td>
                     <td>{{ teacher.specialization }}</td>
-                    <td>{{ teacher.phone }}</td>
+                    <td>{{ teacher.course_name }}</td>
                     <td>
                         <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'teacher_detail' teacher.pk %}">View</a></button>
                         <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{% url 'teacher_edit' teacher.pk %}">Edit</a></button>
