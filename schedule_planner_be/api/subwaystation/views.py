@@ -29,10 +29,7 @@ class SubwayStationViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated & SubwayStationPermissionsMixin]
         return [permission() for permission in permission_classes]
 
-    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
-    def highlight(self, request, *args, **kwargs):
-        snippet = self.get_object()
-        return Response(snippet.highlighted)
+
 
 
 

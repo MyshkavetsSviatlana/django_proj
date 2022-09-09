@@ -31,11 +31,6 @@ class CourseViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated & CoursePermissionsMixin]
         return [permission() for permission in permission_classes]
 
-    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
-    def highlight(self, request, *args, **kwargs):
-        course = self.get_object()
-        return Response(course.highlighted)
-
 
 def csv_courses_list_write(request):
     """""Create a CSV file with teachers list"""
