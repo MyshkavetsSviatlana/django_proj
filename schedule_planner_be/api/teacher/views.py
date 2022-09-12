@@ -27,7 +27,7 @@ class TeacherCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated & TeacherPermissionsMixin]
 
 
-class TeacherUpdateView(generics.RetrieveAPIView, generics.UpdateAPIView):
+class TeacherUpdateView(generics.UpdateAPIView):
     """Изменение преподавателя"""
     queryset = Teacher.objects.filter(is_active=True)
     serializer_class = TeacherUpdateSerializer
