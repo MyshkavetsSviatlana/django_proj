@@ -1,20 +1,11 @@
-from datetime import time, datetime, timedelta, date
-import time
-# import pytz
+from datetime import datetime, timedelta, date
 
 from django.db import models
+from django.db.backends.signals import connection_created
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
-# from django_agenda.models import AbstractTimeSlot, AbstractAvailabilityOccurrence, AbstractAvailability, AbstractBooking
-# from django_agenda.time_span import TimeSpan
-
-# from User.models import User
-from User.models import User
-from course.models import Course, Comment, Lesson, ClassroomAvailability
-
-
-# from schedule_planner_be import settings
+from course.models import Course, Comment, ClassroomAvailability, Lesson
 
 
 class SubwayStation(models.Model):
@@ -100,29 +91,6 @@ class Classroom(models.Model):
 #             yield TimeSpan(self.start_time, self.end_time)
 
 
-# @receiver(post_save, sender=Classroom)
-# def classroom_availability(sender, instance, **kwargs):
-#     start_range_date = date(2022, 9, 1)
-#     number_of_days = 365
-#     date_list = []
-#     for day in range(number_of_days):
-#         a_date = (start_range_date + timedelta(days=day)).isoformat()
-#         date_list.append(a_date)
-#     start_time = time(8)
-#     end_time = time(22)
-#     tz = pytz.timezone("Europe/Minsk")
-#     classroom = instance
-#     for item in date_list:
-#         # available from 8 AM to 22 PM
-#         Availability.objects.create(
-#             classroom=classroom,
-#             start_date=item,
-#             start_time=start_time,
-#             end_time=end_time,
-#             timezone=tz,
-#         )
-
-
 class Schedule(models.Model):
     """Создание модели Расписание"""
 
@@ -143,23 +111,11 @@ class Schedule(models.Model):
         verbose_name_plural = 'Расписания'
 
 
-# class ClassroomAvailability(models.Model):
-#     date = models.DateField()
-#     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
-#     start_time = models.CharField('Время начала занятия', max_length=5)
-#     is_free = models.BooleanField(default=True)
-#
-#     class Meta:
-#         verbose_name_plural = 'Все слоты аудитории'
-#
-#     def __str__(self):
-#         return f"{self.date} {self.classroom} {self.start_time} {self.is_free}"
-
-
 @receiver(post_save, sender=Classroom)
 def classroom_availability(sender, instance, **kwargs):
-    start_range_date = date(2022, 9, 1)
-    number_of_days = 90
+    """"Creates classroom availabilities for 30 days period after classroom creation"""
+    start_range_date = date.today()
+    number_of_days = 30
     date_list = []
     for day in range(number_of_days):
         a_date = (start_range_date + timedelta(days=day)).isoformat()
@@ -179,25 +135,25 @@ def classroom_availability(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Lesson)
 def reserve_classroom(sender, instance, **kwargs):
+    """"Reserves classroom availability"""
     lesson = instance
     date = lesson.date
     classroom = lesson.location
-    print(classroom)
     start_time = lesson.start_time
     slot = ClassroomAvailability.objects.filter(date=date, classroom=classroom, start_time=start_time)
-    print(slot)
     slot.update(is_free=False)
-    print(slot)
 
 
 @receiver(post_save, sender=Lesson)
 def delete_old_classroomavailabilities(sender, instance, **kwargs):
+    """"Deletes classroom availabilities for past dates"""
     today = date.today()
     ClassroomAvailability.objects.filter(date__lt=today).delete()
 
 
 @receiver(post_delete, sender=Lesson)
 def make_classroomavailability_free(sender, instance, **kwargs):
+    """"Returns free status to classroom availabilities"""
     lesson = instance
     date = lesson.date
     classroom = lesson.location
@@ -207,55 +163,40 @@ def make_classroomavailability_free(sender, instance, **kwargs):
 
 
 @receiver(post_delete, sender=Classroom)
-def delete_classroomavailibility(sender, instance, **kwargs):
+def delete_cl_av_for_deleted_classrooms(sender, instance, **kwargs):
+    """"Deletes classroom availabilities for deleted classrooms"""
     classroom = instance
     location = classroom.location
     classroom = classroom.classroom
     address = f'ауд. {classroom}, {location}'
     ClassroomAvailability.objects.filter(classroom=address).delete()
 
-# @receiver(post_save, sender=Lesson)
-# def create_classroomreservation(sender, instance, **kwargs):
-#     lesson = instance
-#     user = lesson.created_by
-#     print(user)
-#     year = lesson.date.year
-#     print(year, type(year))
-#     month = lesson.date.month
-#     day = lesson.date.day
-#     print(day, type(day))
-#     start_hour = int(lesson.start_time[:2])
-#     print(start_hour, type(start_hour))
-#     end_hour = lesson.end_time.hour
-#     print(end_hour, type(end_hour))
-#     tz = pytz.timezone("Europe/Minsk")
-#     reservation = ClassroomReservation(
-#         owner=user,
-#         start_time=datetime(year=year, month=month, day=day, hour=start_hour, tzinfo=tz),
-#         end_time=datetime(year=year, month=month, day=day, hour=end_hour, tzinfo=tz),
-#     )
-#     print(reservation, type(reservation))
-#     reservation.clean()
-#     reservation.save()
 
-
-# def update():
-#     while True:
-#         now = datetime.now()
-#         td = timedelta(days=1)
-#         date = now + td
-#         if now.hour == 10 and now.minute == 34:
-#             all_classrooms = [classroom for classroom in Classroom.objects.all()]
-#             print(all_classrooms)
-#             for classroom in all_classrooms:
-#                 start_time_range = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
-#                                     "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
-#                 for start_time_option in start_time_range:
-#                     ClassroomAvailability.objects.create(
-#                         classroom=classroom,
-#                         date=date,
-#                         start_time=start_time_option,
-#                     )
-#             time.sleep(24 * 60 * 60 - 120)
-#         else:
-#             time.sleep(15)
+@receiver(connection_created)
+def create_cl_av_for_90_days_period(sender, *args, **kwargs):
+    """"Updates classroom availabilities for 90 days period"""
+    classrooms = Classroom.objects.all()
+    for classroom in classrooms:
+        cla_av = ClassroomAvailability.objects.filter(classroom=classroom).values('date')
+        last_cl_av_date_dict = cla_av.latest('date', 'start_time')
+        last_cl_av_date = last_cl_av_date_dict.get('date')
+        date_today = date.today()
+        td = timedelta(days=90)
+        date_in_90_days = date_today + td
+        number_of_days = date_in_90_days - last_cl_av_date
+        number_of_days = number_of_days.days
+        date_list = []
+        for day in range(number_of_days):
+            a_date = (last_cl_av_date + timedelta(days=day)).isoformat()
+            date_list.append(a_date)
+        start_time_range = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
+                            "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
+        del date_list[0]
+        for item in date_list:
+            for start_time_option in start_time_range:
+                # available from 8 AM to 22 PM
+                ClassroomAvailability.objects.create(
+                    classroom=classroom,
+                    date=item,
+                    start_time=start_time_option,
+                )

@@ -1,11 +1,12 @@
 import csv
-import datetime
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
 from django.http import HttpResponse
-from .models import Course, Comment, Lesson
+
 from Teacher.models import Teacher
+from .models import Course, Comment, Lesson
+
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .permissions import LessonPermissionsMixin
@@ -406,8 +407,8 @@ class FilterEveningLessonView(LoginRequiredMixin, GetValuesFoFilters, ListView):
 
 
 def csv_courses_list_write(request):
-    """""Create a CSV file with teachers list"""
-    # Get all data from Teacher Database Table
+    """""Create a CSV file with courses list"""
+    # Get all data from Course Database Table
     courses = Course.objects.all()
 
     # Create the HttpResponse object with the appropriate CSV header.
@@ -425,7 +426,7 @@ def csv_courses_list_write(request):
 
 
 def csv_lessons_list_write(request):
-    """""Create a CSV file with teachers list"""
+    """""Create a CSV file with lessons list"""
     # Get all data from Lesson Database Table
     lessons = Lesson.objects.filter(for_time_slot=False)
     # Create the HttpResponse object with the appropriate CSV header.
