@@ -12,11 +12,13 @@ from django.db import models
 from django.utils.datetime_safe import date
 from django.core.validators import MaxValueValidator
 from multiselectfield import MultiSelectField
+
 from Teacher.models import Teacher
 from User.models import User
 
 
 class ClassroomAvailability(models.Model):
+    """"Creates model ClassroomAvailability"""
     date = models.DateField()
     classroom = models.CharField('Аудитория', max_length=100)
     start_time = models.CharField('Время начала занятия', max_length=5)
@@ -24,6 +26,7 @@ class ClassroomAvailability(models.Model):
 
     class Meta:
         verbose_name_plural = 'Все слоты аудитории'
+        unique_together = ('date', 'classroom', 'start_time')
 
     def __str__(self):
         return f"{self.date} {self.classroom} {self.start_time} {self.is_free}"
@@ -74,7 +77,7 @@ class Course(models.Model):
 
     @property
     def all_course_days(self):
-        """Returns all course days"""
+        """Returns all lesson dates for the course"""
         days_of_week = [float(item) for item in self.days_of_week]
         days_of_week_in_chosen_order = []
         for i in days_of_week:
@@ -146,28 +149,8 @@ class Course(models.Model):
         ("21:00", "21:00"),
     ]
 
-    # @property
-    # def start_time_options(self):
-    #     # import pickle
-    #     # location = self.location
-    #     # lessons = Lesson.objects.filter(course__location=location).values('date', 'start_time')
-    #     all_start_time_options = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00",
-    #                               "17:00", "18:00", "19:00", "20:00", "21:00"]
-    #     all_reserved_options = [str(item) for item in
-    #                             Lesson.objects.filter(date=self.start_date, location=self.location)]
-    #     # print(course)
-    #     for a in all_reserved_options:
-    #         for i in all_start_time_options:
-    #             if i in a:
-    #                 all_start_time_options.remove(i)
-    #     # start_time_options = [(i, i) for i in all_start_time_options]
-    #     start_time_options = [i for i in all_start_time_options]
-    #     return start_time_options
-    #     # return print(lessons)
-
     start_time_options = models.ForeignKey(ClassroomAvailability, on_delete=models.SET_NULL, null=True, default='',
                                            blank=True)
-    # choices = models.CharField("Start time options", max_length=200, default="", null=True, blank=True)
     start_time = models.CharField("Start time", choices=START_TIME_OPTIONS, max_length=9)
     end_time = models.TimeField("End time", null=True, blank=True,
                                 help_text="The field will be filled in automatically after saving")
@@ -175,6 +158,7 @@ class Course(models.Model):
 
     @property
     def find_end_time(self):
+        """Returns end time for the lesson"""
         start_time = self.start_time
         hour = int(start_time[:2])
         minute = int(start_time[3:])
@@ -196,12 +180,10 @@ class Course(models.Model):
 
     course_type = models.CharField("Course type", max_length=16, blank=True, default="",
                                    help_text="The field will be filled in automatically after saving")
-
-    # all_course_dates = models.CharField("All course days", max_length=200, blank=True, default="",
-    #                                     help_text="The field will be filled in automatically after saving")
     is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
+        """"Saves the course"""
         self.start_day_of_week = self.start_day_isoweekday
         self.course_type = self.find_course_type
         # self.choices = self.start_time_options
@@ -220,6 +202,7 @@ class Course(models.Model):
 
 @receiver(post_save, sender=Course)
 def validate_days_of_week(sender, instance, **kwargs):
+    """"Validates that the start date is in chosen days of week for the course"""
     course = instance
     if str(course.start_date.isoweekday()) not in course.days_of_week:
         raise ValidationError(
@@ -229,6 +212,7 @@ def validate_days_of_week(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Course)
 def create_lessons(sender, instance, **kwargs):
+    """"Creates lessons automatically after the course creation"""
     course = instance
     if Lesson.objects.filter(course=course):
         Lesson.objects.filter(course=course).delete()

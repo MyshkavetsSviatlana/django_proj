@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'django_filters',
     'crispy_forms',
     'crispy_bootstrap5',
-    "django_agenda",
 ]
 
 MIDDLEWARE = [

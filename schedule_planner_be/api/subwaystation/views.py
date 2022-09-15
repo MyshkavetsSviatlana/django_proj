@@ -1,9 +1,6 @@
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser, IsAuthenticated, BasePermission, SAFE_METHODS
-from rest_framework.response import Response
-from rest_framework import viewsets, renderers
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets
 
-from User.models import User
 from api.subwaystation.permissions import SubwayStationPermissionsMixin
 from api.subwaystation.serializers import SubwayStationSerializer
 from schedule.models import SubwayStation
